@@ -8,12 +8,22 @@ const PatientSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 3 },
   email: { type: String, required: true, unique: true },
   mobileNum: { type: Number, required: true, maxlength: 10, minlength: 10, unique: true, },
-  password: { type: String },
+  password: { type: String,required: true },
   gender: { type: String, required: true },
   state: { type: String, required: true },
   district: { type: String, required: true }
 });
 
+// token generate---------
+PatientSchema.methods.generateAuthToken = async function () {
+  try {
+    const pay_load = { _id: this._id };
+    const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
+    return token;
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 // password encryption------------
 PatientSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
@@ -22,7 +32,7 @@ PatientSchema.pre("save", async function (next) {
   next();
 });
 
-const Patient = new mongoose.model("User", PatientSchema);
+const Patient = new mongoose.model("Patient", PatientSchema);
 module.exports = Patient;
 
 //    --------patient registration-------
@@ -30,3 +40,5 @@ module.exports = Patient;
 //     email: String
 //     mobileNum: Number
 //     password: String
+//     district
+//     state

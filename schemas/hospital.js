@@ -3,15 +3,33 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-
 const HospitalSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 3 },
   email: { type: String, required: true, unique: true },
-  mobileNum: { type: Number, required: true, maxlength: 10, minlength: 10, unique: true, },
-  password: { type: String },
-  gender: { type: String, required: true },
+  mobileNum: {
+    type: Number,
+    required: true,
+    maxlength: 10,
+    minlength: 10,
+    unique: true,
+  },
+  password: { type: String, required: true },
+  state: { type: String, required: true },
+  district: { type: String, required: true },
+  availableBads: {type : Number, default : 0 },
+  hospitalType: { type: Boolean, default: false }, // private or government ... true for - government and false for - private
 });
 
+// token generate---------
+HospitalSchema.methods.generateAuthToken = async function () {
+  try {
+    const pay_load = { _id: this._id };
+    const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
+    return token;
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 // password encryption------------
 HospitalSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
@@ -20,7 +38,8 @@ HospitalSchema.pre("save", async function (next) {
   next();
 });
 
-const Hospital = new mongoose.model("User", HospitalSchema);
+
+const Hospital = new mongoose.model("Hospital", HospitalSchema);
 module.exports = Hospital;
 
 //    --------hospital registration-------
