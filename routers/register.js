@@ -2,6 +2,7 @@ const express = require("express");
 const router = new express.Router();
 const Patient = require("../schemas/patient");
 const Hospital = require("../schemas/hospital");
+const { verify } = require("jsonwebtoken");
 
 router.get("/patient/:id", async (req, res) => {
   try {

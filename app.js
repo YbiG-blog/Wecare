@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const register_router = require("./routers/register");
 const login_router = require("./routers/login");
 const all = require("./routers/getall")
+const addBads = require("./routers/addbads");
 require("./database/database");
 
 const app = express();
@@ -38,6 +39,7 @@ app.use(cookieParser());
 app.use("/", register_router);
 app.use("/", login_router);
 app.use("/all/", all);
+app.use("/",addBads);
 
 const port =process.env.PORT || 8000;
 app.listen(port,()=>{

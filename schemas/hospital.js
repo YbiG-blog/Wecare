@@ -2,6 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 
 const HospitalSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 3 },
@@ -16,7 +17,7 @@ const HospitalSchema = new mongoose.Schema({
   password: { type: String, required: true },
   state: { type: String, required: true },
   district: { type: String, required: true },
-  availableBads: {type : Number, default : 0 },
+  availableBads: { type: Number, default: 0 },
   hospitalType: { type: Boolean, default: false }, // private or government ... true for - government and false for - private
 });
 
@@ -27,7 +28,7 @@ HospitalSchema.methods.generateAuthToken = async function () {
     const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
     return token;
   } catch (err) {
-    res.status(400).send(err);
+    return err;
   }
 };
 // password encryption------------
@@ -37,7 +38,6 @@ HospitalSchema.pre("save", async function (next) {
   }
   next();
 });
-
 
 const Hospital = new mongoose.model("Hospital", HospitalSchema);
 module.exports = Hospital;

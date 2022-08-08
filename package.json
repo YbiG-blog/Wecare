@@ -10,6 +10,7 @@
   "author": "team SIH-23",
   "license": "ISC",
   "dependencies": {
+    "atob": "^2.1.2",
     "bcrypt": "^5.0.1",
     "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",

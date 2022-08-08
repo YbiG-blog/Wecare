@@ -2,16 +2,22 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-
+const jwt = require("jsonwebtoken");
 
 const PatientSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 3 },
   email: { type: String, required: true, unique: true },
-  mobileNum: { type: Number, required: true, maxlength: 10, minlength: 10, unique: true, },
-  password: { type: String,required: true },
+  mobileNum: {
+    type: Number,
+    required: true,
+    maxlength: 10,
+    minlength: 10,
+    unique: true,
+  },
+  password: { type: String, required: true },
   gender: { type: String, required: true },
   state: { type: String, required: true },
-  district: { type: String, required: true }
+  district: { type: String, required: true },
 });
 
 // token generate---------
@@ -21,7 +27,7 @@ PatientSchema.methods.generateAuthToken = async function () {
     const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
     return token;
   } catch (err) {
-    res.status(400).send(err);
+    return err;
   }
 };
 // password encryption------------
