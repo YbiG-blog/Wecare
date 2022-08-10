@@ -26,17 +26,19 @@ router.put("/bads", verify, async (req, res) => {
   }
 });
 
-// router.put("/seebads", async(req,res)=>{
-//   try {
-//     const hospitalId = req.body.hospitalId;
-//     const findBad = Bad.findOne({hospitalId: hospitalId}).populate(
-//       "name"
-//     );
-//     res.status(200).send({findBad});
-   
-//   } catch (err) {
-//     res.status(401).send(err);
-//   }
-// })
+router.put("/seebads", async(req,res)=>{
+
+try {
+  const hospitalId = req.body.hospitalId;
+
+  const badData = await Bad.find({ hospitalId : hospitalId }).populate(
+    "hospitalId",
+    "name email mobileNum state district hospitalType"
+  );
+  res.status(201).send(badData);
+} catch (err) {
+  res.status(400).send(err);
+}
+});
 
 module.exports = router;
