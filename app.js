@@ -5,6 +5,8 @@ const register_router = require("./routers/register");
 const login_router = require("./routers/login");
 const all = require("./routers/getall")
 const addBads = require("./routers/addbads");
+const availableBds = require("./routers/availablebads");
+
 require("./database/database");
 
 const app = express();
@@ -40,6 +42,7 @@ app.use("/", register_router);
 app.use("/", login_router);
 app.use("/all/", all);
 app.use("/",addBads);
+app.use("/",availableBds);
 
 const port =process.env.PORT || 8000;
 app.listen(port,()=>{
