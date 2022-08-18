@@ -17,7 +17,9 @@ router.get("/patient/:id", async (req, res) => {
 router.patch("/patient/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const data = await Patient.findOneAndUpdate(id,{
+    const data = await Patient.findOneAndUpdate({
+      _id: id
+    },{
       $set: req.body
     });
       res.status(200).send("Account Updated");
@@ -54,7 +56,7 @@ router.post("/registerpatient", async (req, res) => {
       password,
       gender,
       state,
-      district,
+      district
     });
 
     const save = await patient_create.save();
@@ -78,7 +80,9 @@ router.get("/hospital/:id", async (req, res) => {
 router.patch("/hospital/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const data = await Hospital.findOneAndUpdate(id,{
+    const data = await Hospital.findOneAndUpdate({
+      _id: id
+    },{
       $set: req.body
     });
       res.status(200).send("Account Updated");
@@ -100,7 +104,7 @@ router.delete("/hospital/:id", async (req, res) => {
 router.post("/registerhospital", async (req, res) => {
   // const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
   try {
-    const { name, email, mobileNum, password, state, district, hospitalType } =
+    const { name, email, mobileNum, password, state, district, disthHospital, hospitalType } =
       await req.body;
     const hospitalExist = await Hospital.findOne({ email });
 
@@ -115,6 +119,7 @@ router.post("/registerhospital", async (req, res) => {
       password,
       state,
       district,
+      disthHospital,
       hospitalType,
     });
 
@@ -122,7 +127,7 @@ router.post("/registerhospital", async (req, res) => {
 
     res.status(201).send(save);
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send(`error ${err}`);
   }
 });
 

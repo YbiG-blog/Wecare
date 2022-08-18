@@ -17,8 +17,8 @@ const HospitalSchema = new mongoose.Schema({
   password: { type: String, required: true },
   state: { type: String, required: true },
   district: { type: String, required: true },
+  disthHospital : { type : Number, required: true},
   hospitalType: { type: Boolean, default: false }, // private or government ... true for - government and false for - private
-  distance : { type : Number, required: true}
 });
 
 // token generate---------
@@ -47,3 +47,4 @@ module.exports = Hospital;
 //     email: String
 //     mobileNum: Number
 //     password: String
+//     pass - hospital
