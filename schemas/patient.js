@@ -17,8 +17,8 @@ const PatientSchema = new mongoose.Schema({
   password: { type: String, required: true },
   gender: { type: String, required: true },
   state: { type: String, required: true },
-  district: { type: String, required: true },
-  distance : { type : Number, required: true}
+  city: { type: String, required: true },
+  address : { type : String, required: true}
 });
 
 // token generate---------

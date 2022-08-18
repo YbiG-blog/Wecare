@@ -41,7 +41,7 @@ router.delete("/patient/:id", async (req, res) => {
 router.post("/registerpatient", async (req, res) => {
   const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
   try {
-    const { name, email, mobileNum, password, gender, state, district } =
+    const { name, email, mobileNum, password, gender, state, city, address } =
       await req.body;
     const patientExist = await Patient.findOne({ email });
 
@@ -56,7 +56,8 @@ router.post("/registerpatient", async (req, res) => {
       password,
       gender,
       state,
-      district
+      city,
+      address
     });
 
     const save = await patient_create.save();
@@ -104,7 +105,7 @@ router.delete("/hospital/:id", async (req, res) => {
 router.post("/registerhospital", async (req, res) => {
   // const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
   try {
-    const { name, email, mobileNum, password, state, district, disthHospital, hospitalType } =
+    const { name, email, Hospitalid , mobileNum, password, address, state, city, hospitalType } =
       await req.body;
     const hospitalExist = await Hospital.findOne({ email });
 
@@ -115,11 +116,12 @@ router.post("/registerhospital", async (req, res) => {
     const hospital_create = new Hospital({
       name,
       email,
+      Hospitalid,
       mobileNum,
       password,
+      address,
       state,
-      district,
-      disthHospital,
+      city,
       hospitalType,
     });
 

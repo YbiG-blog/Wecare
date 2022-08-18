@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const HospitalSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 3 },
   email: { type: String, required: true, unique: true },
+  Hospitalid : { type : String, required: true},
   mobileNum: {
     type: Number,
     required: true,
@@ -15,9 +16,9 @@ const HospitalSchema = new mongoose.Schema({
     unique: true,
   },
   password: { type: String, required: true },
+  address : { type: String, required: true },
   state: { type: String, required: true },
-  district: { type: String, required: true },
-  disthHospital : { type : Number, required: true},
+  city: { type: String, required: true },
   hospitalType: { type: Boolean, default: false }, // private or government ... true for - government and false for - private
 });
 
