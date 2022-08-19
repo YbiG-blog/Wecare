@@ -19,7 +19,7 @@ router.get("/totalnum/bads", async (req, res) => {
         return;
     }
 });
-router.get("/bads/:id", async (req, res) => {
+router.get("/bad/:id", async (req, res) => {
     try {
         const id = req.params.id;
         const findBad = await Bads.findById(id);
@@ -27,8 +27,9 @@ router.get("/bads/:id", async (req, res) => {
         const name = relatedHospital.name;
         const email =  relatedHospital.email;
         const state = relatedHospital.state;
-        const district = relatedHospital.district;
-        const data = {findBad, name, email, state, district };
+        const city = relatedHospital.city;
+        const hospitalType = relatedHospital.hospitalType;
+        const data = {findBad, name, email, hospitalType, state, city };
         res
             .status(200)
             .send(
@@ -42,7 +43,7 @@ router.get("/bads/:id", async (req, res) => {
 });
 
 // update bad
-router.patch("/bads/:id", verify, async (req, res) => {
+router.patch("/bad/:id", verify, async (req, res) => {
     try {
       const id = req.params.id;
       const isVerified = true;
@@ -68,7 +69,7 @@ router.patch("/bads/:id", verify, async (req, res) => {
     }
   });
   
-  router.delete("/bads/:id", verify, async (req, res) => {
+  router.delete("/bad/:id", verify, async (req, res) => {
     try {
       const isVerified = true;
       const token = req.body.cookie_token;
