@@ -5,7 +5,7 @@ const Hospital = require("../schemas/hospital");
 const atob = require("atob");
 const verify = require("../middleware/auth");
 
-router.put("/bads", verify, async (req, res) => {
+router.put("/addbad", verify, async (req, res) => {
   try {
     const isVerified = true;
     const token = req.body.cookie_token;
@@ -13,11 +13,13 @@ router.put("/bads", verify, async (req, res) => {
     const decode = JSON.parse(atob(dec)); //contains Userid
     console.log(dec);
 
-    const { roomNum, price } = await req.body;
+    const { roomNum,type, price, otherFacilities } = await req.body;
     let bads_creat = new Bad({
       hospitalId: decode,
       roomNum,
-      price
+      type,
+      price,
+      otherFacilities
     });
     await bads_creat.save();
     let msg = "bad add successfully";
