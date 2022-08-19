@@ -7,7 +7,7 @@ const all = require("./routers/getall")
 const addBads = require("./routers/addbads");
 const availableBds = require("./routers/availablebads");
 const bookingbad = require("./routers/bookingbad")
-
+const newslatter = require("./newslatter");
 require("./database/database");
 
 const app = express();
@@ -45,7 +45,7 @@ app.use("/all/", all);
 app.use("/",addBads);
 app.use("/",availableBds);
 app.use("/bad",bookingbad);
-
+app.use("/",newslatter);
 
 /// https://sih-23.herokuapp.com/ 
 const port =process.env.PORT || 8000;

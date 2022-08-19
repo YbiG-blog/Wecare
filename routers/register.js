@@ -2,7 +2,7 @@ const express = require("express");
 const router = new express.Router();
 const Patient = require("../schemas/patient");
 const Hospital = require("../schemas/hospital");
-const { verify } = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 router.get("/patient/:id", async (req, res) => {
   try {
@@ -112,7 +112,7 @@ router.post("/registerhospital", async (req, res) => {
     if (hospitalExist) {
       return res.status(200).send({ msg: "already exists." });
     }
-
+    // const cookie_token = await  Hospital.generateAuthToken();
     const hospital_create = new Hospital({
       name,
       email,
@@ -126,8 +126,11 @@ router.post("/registerhospital", async (req, res) => {
     });
 
     const save = await hospital_create.save();
-
-    res.status(201).send(save);
+    // token
+    const pay_load = { _id: hospital_create._id };
+    console.log(hospital_create.Hospitalid);
+    const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
+    res.status(201).send({save,token});
   } catch (err) {
     res.status(400).send(`error ${err}`);
   }
