@@ -40,6 +40,11 @@ router.put("/booking", async (req, res) => {
       console.log("OTP sent");
     }
   });
+  await Bad.findOneAndUpdate({
+    _id: badId
+  },{
+    $set: { booking : true }
+  });
 
 res.status(201).send("your bad has been booked and details send to your email");
 } catch (err) {
