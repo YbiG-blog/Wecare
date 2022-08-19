@@ -94,6 +94,15 @@ router.patch("/bad/:id", verify, async (req, res) => {
     }
   });
   
+// get bads by type
+router.get("/:type", async (req, res) => {
+  try {
+  const badData = await Bads.find({ type: req.params.type });
+    res.status(200).send(badData);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 router.get("/bads", async (req, res) => {
     try {

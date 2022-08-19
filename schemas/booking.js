@@ -6,8 +6,13 @@ const bookingSchema = new Schema({
   hospitalId: { type: Schema.Types.ObjectId, ref: "Hospital" },
   badId: { type: Schema.Types.ObjectId, ref: "Hospital" },
   patientName : { type: String, required: true, minlength: 3  },
-  email: { type: String, required: true, unique: true }
+  email: { type: String, required: true, unique: true },
+  phoneNum : { type: Number, required: true },
+  age : { type: Number, required: true },
+  address : { type: String, required: true }
 });
 
 const Bookingbad = new mongoose.model("Bookingbad", bookingSchema);
 module.exports = Bookingbad;
+
+
