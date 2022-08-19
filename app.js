@@ -6,6 +6,7 @@ const login_router = require("./routers/login");
 const all = require("./routers/getall")
 const addBads = require("./routers/addbads");
 const availableBds = require("./routers/availablebads");
+const bookingbad = require("./routers/bookingbad")
 
 require("./database/database");
 
@@ -43,6 +44,7 @@ app.use("/", login_router);
 app.use("/all/", all);
 app.use("/",addBads);
 app.use("/",availableBds);
+app.use("/bad",bookingbad);
 
 
 /// https://sih-23.herokuapp.com/ 
