@@ -1,14 +1,27 @@
 const express = require("express");
 const router = new express.Router();
-// const Patient = require("../schemas/patient");
 const Hospital = require("../schemas/hospital");
+const Bads = require("../schemas/bad");
 const jwt = require("jsonwebtoken");
+
 
 router.get("/hospital/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const data = await Hospital.findById(id);
-    res.status(200).send(data);
+    const dataHos = await Hospital.findById(id);
+    const badData = await Bads.find();
+
+    for (let i = 0; i < badData.length; i++) {
+      if(badData[i].hospitalId == id)
+      {
+       var matchbadData = badData[i];
+        console.log(matchbadData);
+        break;
+      }
+    }  
+
+
+    res.status(200).send({ dataHos, matchbadData });
   } catch (err) {
     res.status(400).send(err);
   }
