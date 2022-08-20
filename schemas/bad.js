@@ -4,8 +4,14 @@ const Schema = mongoose.Schema;
 
 const badSchema = new Schema({
   hospitalId: { type: Schema.Types.ObjectId, ref: "Hospital" },
-  type: { type: String, required: true },
-  price: { type: Number, required: true },
+  generalType : { 
+  availbility : { type: Number, required: true },
+  price: { type: Number, required: true }
+  },
+  specialType : { 
+  availbility : { type: Number, required: true },
+  price: { type: Number, required: true }
+  },
   otherFacilities:{ type: String , required: true},
   booking: { type: Boolean, default : false }
 });

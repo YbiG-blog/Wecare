@@ -1,72 +1,8 @@
 const express = require("express");
 const router = new express.Router();
-const Patient = require("../schemas/patient");
+// const Patient = require("../schemas/patient");
 const Hospital = require("../schemas/hospital");
 const jwt = require("jsonwebtoken");
-
-router.get("/patient/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const data = await Patient.findById(id);
-    res.status(200).send(data);
-  } catch (err) {
-    res.status(400).send(err);
-  }
-});
-// update patient
-router.patch("/patient/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const data = await Patient.findOneAndUpdate({
-      _id: id
-    },{
-      $set: req.body
-    });
-      res.status(200).send("Account Updated");
-  } catch (err) {
-    res.status(400).send(err);
-  }
-});
-// delete patient
-router.delete("/patient/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const data = await Patient.findByIdAndDelete(id);
-    res.status(200).json("Account deleted");
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json(err);
-  }
-});
-router.post("/registerpatient", async (req, res) => {
-  const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
-  try {
-    const { name, email, mobileNum, password, gender, state, city, address } =
-      await req.body;
-    const patientExist = await Patient.findOne({ email });
-
-    if (patientExist) {
-      return res.status(200).send({ msg: "already exists." });
-    }
-
-    const patient_create = new Patient({
-      name,
-      email,
-      mobileNum,
-      password,
-      gender,
-      state,
-      city,
-      address
-    });
-
-    const save = await patient_create.save();
-
-    res.status(201).send(save);
-  } catch (err) {
-    res.status(400).send(err);
-  }
-});
 
 router.get("/hospital/:id", async (req, res) => {
   try {
@@ -81,12 +17,15 @@ router.get("/hospital/:id", async (req, res) => {
 router.patch("/hospital/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const data = await Hospital.findOneAndUpdate({
-      _id: id
-    },{
-      $set: req.body
-    });
-      res.status(200).send("Account Updated");
+    const data = await Hospital.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $set: req.body,
+      }
+    );
+    res.status(200).send("Account Updated");
   } catch (err) {
     res.status(400).send(err);
   }
@@ -105,8 +44,17 @@ router.delete("/hospital/:id", async (req, res) => {
 router.post("/registerhospital", async (req, res) => {
   // const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
   try {
-    const { name, email, Hospitalid , mobileNum, password, address, state, city, hospitalType } =
-      await req.body;
+    const {
+      name,
+      email,
+      Hospitalid,
+      mobileNum,
+      password,
+      address,
+      state,
+      city,
+      hospitalType,
+    } = await req.body;
     const hospitalExist = await Hospital.findOne({ email });
 
     if (hospitalExist) {
@@ -130,10 +78,74 @@ router.post("/registerhospital", async (req, res) => {
     const pay_load = { _id: hospital_create._id };
     console.log(hospital_create.Hospitalid);
     const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
-    res.status(201).send({save,token});
+    res.status(201).send({ save, token });
   } catch (err) {
     res.status(400).send(`error ${err}`);
   }
 });
+
+// router.get("/patient/:id", async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const data = await Patient.findById(id);
+//     res.status(200).send(data);
+//   } catch (err) {
+//     res.status(400).send(err);
+//   }
+// });
+// update patient
+// router.patch("/patient/:id", async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const data = await Patient.findOneAndUpdate({
+//       _id: id
+//     },{
+//       $set: req.body
+//     });
+//       res.status(200).send("Account Updated");
+//   } catch (err) {
+//     res.status(400).send(err);
+//   }
+// });
+// delete patient
+// router.delete("/patient/:id", async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const data = await Patient.findByIdAndDelete(id);
+//     res.status(200).json("Account deleted");
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(400).json(err);
+//   }
+// });
+// router.post("/registerpatient", async (req, res) => {
+//   const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
+//   try {
+//     const { name, email, mobileNum, password, gender, state, city, address } =
+//       await req.body;
+//     const patientExist = await Patient.findOne({ email });
+
+//     if (patientExist) {
+//       return res.status(200).send({ msg: "already exists." });
+//     }
+
+//     const patient_create = new Patient({
+//       name,
+//       email,
+//       mobileNum,
+//       password,
+//       gender,
+//       state,
+//       city,
+//       address
+//     });
+
+//     const save = await patient_create.save();
+
+//     res.status(201).send(save);
+//   } catch (err) {
+//     res.status(400).send(err);
+//   }
+// });
 
 module.exports = router;

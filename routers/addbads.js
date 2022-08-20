@@ -1,6 +1,6 @@
 const express = require("express");
 const router = new express.Router();
-const Bad = require("../schemas/bads");
+const Bad = require("../schemas/bad");
 const Hospital = require("../schemas/hospital");
 const atob = require("atob");
 const verify = require("../middleware/auth");
