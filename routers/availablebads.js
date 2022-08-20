@@ -5,20 +5,6 @@ const atob = require("atob");
 const verify = require("../middleware/auth");
 const router = new express.Router();
 
-router.get("/totalnum/bads", async (req, res) => {
-    try {
-        const availableBads = await Bads.find({
-            booking: false,
-        }).countDocuments();
-
-        console.log(availableBads);
-        res.status(200).json({ availableBads });
-        return;
-    } catch (err) {
-        res.sendStatus(500);
-        return;
-    }
-});
 router.get("/bad/:id", async (req, res) => {
     try {
         const id = req.params.id;
@@ -51,7 +37,7 @@ router.patch("/bad/:id", verify, async (req, res) => {
       const dec = token.split(".")[1];
       const decode = JSON.parse(atob(dec)); //contains hospitalid
     const findbad = await Bads.findById(id);
-    console.log(decode._id);
+
      console.log(findbad.hospitalId);
       if(findbad.hospitalId == decode._id){
       const data = await Bads.findOneAndUpdate( {
@@ -79,7 +65,6 @@ router.patch("/bad/:id", verify, async (req, res) => {
   
       const id = req.params.id;
       const findbad = await Bads.findById(id);
-    console.log(decode._id);
      console.log(findbad.hospitalId);
       if(findbad.hospitalId == decode._id){
       const data = await Bads.findByIdAndDelete({
@@ -93,16 +78,7 @@ router.patch("/bad/:id", verify, async (req, res) => {
       res.status(400).send(err);
     }
   });
-  
-// get bads by type
-router.get("/:type", async (req, res) => {
-  try {
-  const badData = await Bads.find({ type: req.params.type });
-    res.status(200).send(badData);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+
 
 router.get("/bads", async (req, res) => {
     try {

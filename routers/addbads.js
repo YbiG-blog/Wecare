@@ -13,13 +13,12 @@ router.put("/addbad", verify, async (req, res) => {
     const decode = JSON.parse(atob(dec)); //contains Userid
     console.log(dec);
 
-    const { roomNum,type, price, otherFacilities } = await req.body;
+    const { generalType, specialType, otherFacilities } = await req.body;
     let bads_creat = new Bad({
       hospitalId: decode,
-      roomNum,
-      type,
-      price,
-      otherFacilities
+      generalType,
+      specialType,
+      otherFacilities,
     });
     await bads_creat.save();
     let msg = "bad add successfully";
@@ -29,19 +28,18 @@ router.put("/addbad", verify, async (req, res) => {
   }
 });
 
-router.put("/seebads", async(req,res)=>{
+router.put("/seebads", async (req, res) => {
+  try {
+    const hospitalId = req.body.hospitalId;
 
-try {
-  const hospitalId = req.body.hospitalId;
-
-  const badData = await Bad.find({ hospitalId : hospitalId }).populate(
-    "hospitalId",
-    "name email mobileNum state district hospitalType"
-  );
-  res.status(201).send(badData);
-} catch (err) {
-  res.status(400).send(err);
-}
+    const badData = await Bad.find({ hospitalId: hospitalId }).populate(
+      "hospitalId",
+      "name email mobileNum state district hospitalType"
+    );
+    res.status(201).send(badData);
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
 module.exports = router;

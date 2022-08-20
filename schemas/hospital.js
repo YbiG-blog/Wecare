@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const HospitalSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 3 },
   email: { type: String, required: true, unique: true },
-  Hospitalid : { type : String, required: true},
+  Hospitalid : { type : String, required: true, unique: true},
   mobileNum: {
     type: Number,
     required: true,
