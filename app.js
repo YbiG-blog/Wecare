@@ -8,6 +8,7 @@ const addBads = require("./routers/addbads");
 const availableBds = require("./routers/availablebads");
 const bookingbad = require("./routers/bookingbad")
 const newslatter = require("./newslatter");
+
 require("./database/database");
 
 const app = express();

@@ -91,4 +91,48 @@
 //     }
 //  })
 
+
+// npm i --save-dev @types/springedge
+
+// var params = {
+//   'apikey': 'thisisyashvardhan', // API Key 
+//   'sender': 'SEDEMO', // Sender Name 
+//   'to': [
+//     '917906962743'  //Moblie Number 
+//   ],
+//   'message': 'hii'
+// };
+
+// springedge.messages.send(params, 8000, function (err, response) {
+//   if (err) {
+//     return console.log(err);
+//   }
+//   console.log(response);
+// })
+
+// springedge.messages.send(params, 8000, function (err, response) {
+//   if (err) {
+//     return console.log(err);
+//   }
+//   console.log(response);
+// });
+
+// app.post("/sendotp", async(req,res)=>{
+    //   sendMessage(req.body.n,req.body.m,res);
+    // })
+    // function sendMessage(n,m,res){
+    // var options = {
+    //   authorization : 'Jwnf5WRpNl9LtG7U03du16gyqm42eOz8abAiCvhHkVSQrYIsDccROU23t1Z4Ki7IvakVmLGsQFNplxrg',
+    //   message: m,
+    //   numbers: [n]
+    // };
+    // // send sms
+    // fast2sms.sendMessage(options)
+    
+    // .then((response) => res.send("send")) 
+    // .catch((error) => res.send("not")
+    // )
+    // }
+    
+
 // module.exports = router; 

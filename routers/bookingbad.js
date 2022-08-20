@@ -3,28 +3,35 @@ const express = require("express");
 const router = new express.Router();
 const bookingBad = require("../schemas/booking");
 const Bad = require("../schemas/bad");
+const Hospital = require("../schemas/hospital");
 const atob = require("atob");
 const verify = require("../middleware/auth");
 const nodemailer = require("nodemailer");
 
 router.put("/booking/:id", async (req, res) => {
   try {
-    const badId = req.params.id;
-    console.log(badId);
-    const badData = await Bad.findById({ _id: badId });
-    // console.log(badData);
-    //   const { patientName, email } = await req.body;
+    const Id = req.params.id;
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    console.log(otp);
     let bads_allot = new bookingBad({
-      hospitalId: badData.hospitalId,
+      hospitalId: Id,
       patientName: req.body.patientName,
       email: req.body.email,
       phoneNum: req.body.phoneNum,
       age: req.body.age,
       address: req.body.address,
+      NumberofBads: req.body.NumberofBads,
+      type: req.body.type,
+      otp: otp,
     });
     await bads_allot.save();
-    console.log(bads_allot);
-    // confirm otp
+const badallotid = bads_allot._id;
+
+const findbad = await Bad.find({
+  hospitalId: Id,
+});
+const badId = findbad[0]._id;
 
     // const transporter = nodemailer.createTransport({
     //   service: "gmail",
@@ -52,29 +59,97 @@ router.put("/booking/:id", async (req, res) => {
     // },{
     //   $set: { booking : true }
     // });
-
+const msg = "your bad has been sent";
     res
       .status(201)
-      .send("your bad has been booked and details send to your email");
+      .send(
+       {msg, badallotid, badId }
+      );
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
 });
 
-// router.put("/bookingbad", verify, async(req,res)=>{
-//   try {
-//     const isVerified = true;
-//     const token = req.body.cookie_token;
-//     const dec = token.split(".")[1];
-//     const decode = JSON.parse(atob(dec)); //contains Userid
-//     console.log(decode);
+router.put("/bookingbad/verify", async (req, res) => {
+  try {
+    const bad_allotId = req.body.badallotid;
+    const findbadallot = await bookingBad.find({
+      _id: bad_allotId,
+    });
+    const badId = req.body.badid;
+    const findbad = await Bad.find({
+      _id: badId,
+    });
 
-//     const findbookingBad = bookingBad.findById({hospitalId:decode>_id});
-//     res.status(200).send(findbookingBad);
+    // otp
+    const otpVerify = req.body.otp;
 
-//   } catch (err) {
-//     res.status(400).send(`err ${err}`);
-//   }
-//   });
+    if (otpVerify === findbadallot[0].otp) {
+    
+      if(findbadallot[0].bookingFlag === false){
+        
+      if (findbadallot[0].type == "normal") {
+        const badupdateNum =
+          findbad[0].generalType.availbility - findbadallot[0].NumberofBads;
+        const priceperbad = findbad[0].generalType.pricePerbad;
+        const type = findbad[0].generalType.type;
+        console.log(badupdateNum);
+        const baddata = await Bad.findOneAndUpdate(
+          {
+            _id: badId,
+          },
+          {
+            $set: {
+              generalType: {
+                type: type,
+                availbility: badupdateNum,
+                pricePerbad: priceperbad,
+              },
+            },
+          }
+        );
+      } else if (findbadallot[0].type == "special") {
+        const badupdateNum =
+          findbad[0].specialType.availbility - findbadallot[0].NumberofBads;
+        const priceperbad = findbad[0].specialType.pricePerbad;
+        const type = findbad[0].specialType.type;
+        console.log(badupdateNum);
+        const baddata = await Bad.findOneAndUpdate(
+          {
+            _id: badId,
+          },
+          {
+            $set: {
+              specialType: {
+                type: type,
+                availbility: badupdateNum,
+                pricePerbad: priceperbad,
+              },
+            },
+          }
+        );
+      }
+      const updateBookinngFlag = await bookingBad.findOneAndUpdate(
+        {
+          _id: bad_allotId,
+        },
+        {
+          $set: {
+            bookingFlag : true
+          },
+        }
+      );
+      res.status(200).send("your bad has been booked");
+    }
+    else{
+      res.status(400).send("go to booking page and try to book again");
+    }
+    } else {
+      res.status(400).send("otp is not verified");
+    }
+  } catch (err) {
+    res.status(400).send(`err ${err}`);
+  }
+});
 
 module.exports = router;
