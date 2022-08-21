@@ -28,10 +28,10 @@ router.put("/booking/:id", async (req, res) => {
     const findbad = await Bad.find({
       hospitalId: Id,
     });
-    const badId = findbad[0]._id;
+    const badid = findbad[0]._id;
 
-    /// otp sent
-
+    /// otp sent to your email
+console.log(bads_allot.email);
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -56,7 +56,7 @@ router.put("/booking/:id", async (req, res) => {
 
     const msg = "Otp has been sent";
     const otpsent = bads_allot.otp;
-    res.status(201).send({ msg, badallotid, badId, otpsent });
+    res.status(201).send({ msg, badallotid, badid, otpsent });
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
