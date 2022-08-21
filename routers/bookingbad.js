@@ -26,12 +26,12 @@ router.put("/booking/:id", async (req, res) => {
       otp: otp,
     });
     await bads_allot.save();
-const badallotid = bads_allot._id;
+    const badallotid = bads_allot._id;
 
-const findbad = await Bad.find({
-  hospitalId: Id,
-});
-const badId = findbad[0]._id;
+    const findbad = await Bad.find({
+      hospitalId: Id,
+    });
+    const badId = findbad[0]._id;
 
     // const transporter = nodemailer.createTransport({
     //   service: "gmail",
@@ -59,12 +59,8 @@ const badId = findbad[0]._id;
     // },{
     //   $set: { booking : true }
     // });
-const msg = "your bad has been sent";
-    res
-      .status(201)
-      .send(
-       {msg, badallotid, badId }
-      );
+    const msg = "your bad has been sent";
+    res.status(201).send({ msg, badallotid, badId });
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
@@ -85,68 +81,123 @@ router.put("/bookingbad/verify", async (req, res) => {
     const otpVerify = req.body.otp;
 
     if (otpVerify === findbadallot[0].otp) {
-    
-      if(findbadallot[0].bookingFlag === false){
-        
-      if (findbadallot[0].type == "normal") {
-        const badupdateNum =
-          findbad[0].generalType.availbility - findbadallot[0].NumberofBads;
-        const priceperbad = findbad[0].generalType.pricePerbad;
-        const type = findbad[0].generalType.type;
-        console.log(badupdateNum);
-        const baddata = await Bad.findOneAndUpdate(
-          {
-            _id: badId,
-          },
-          {
-            $set: {
-              generalType: {
-                type: type,
-                availbility: badupdateNum,
-                pricePerbad: priceperbad,
-              },
+      if (findbadallot[0].bookingFlag === false) {
+        if (findbadallot[0].type == "normal") {
+          const badupdateNum =
+            findbad[0].generalType.availbility - findbadallot[0].NumberofBads;
+          const priceperbad = findbad[0].generalType.pricePerbad;
+          const type = findbad[0].generalType.type;
+          console.log(badupdateNum);
+          const baddata = await Bad.findOneAndUpdate(
+            {
+              _id: badId,
             },
-          }
-        );
-      } else if (findbadallot[0].type == "special") {
-        const badupdateNum =
-          findbad[0].specialType.availbility - findbadallot[0].NumberofBads;
-        const priceperbad = findbad[0].specialType.pricePerbad;
-        const type = findbad[0].specialType.type;
-        console.log(badupdateNum);
-        const baddata = await Bad.findOneAndUpdate(
-          {
-            _id: badId,
-          },
-          {
-            $set: {
-              specialType: {
-                type: type,
-                availbility: badupdateNum,
-                pricePerbad: priceperbad,
+            {
+              $set: {
+                generalType: {
+                  type: type,
+                  availbility: badupdateNum,
+                  pricePerbad: priceperbad,
+                },
               },
+            }
+          );
+        } else if (findbadallot[0].type == "special") {
+          const badupdateNum =
+            findbad[0].specialType.availbility - findbadallot[0].NumberofBads;
+          const priceperbad = findbad[0].specialType.pricePerbad;
+          const type = findbad[0].specialType.type;
+          console.log(badupdateNum);
+          const baddata = await Bad.findOneAndUpdate(
+            {
+              _id: badId,
             },
-          }
-        );
-      }
-      const updateBookinngFlag = await bookingBad.findOneAndUpdate(
-        {
-          _id: bad_allotId,
-        },
-        {
-          $set: {
-            bookingFlag : true
-          },
+            {
+              $set: {
+                specialType: {
+                  type: type,
+                  availbility: badupdateNum,
+                  pricePerbad: priceperbad,
+                },
+              },
+            }
+          );
         }
-      );
-      res.status(200).send("your bad has been booked");
-    }
-    else{
-      res.status(400).send("go to booking page and try to book again");
-    }
+        const updateBookinngFlag = await bookingBad.findOneAndUpdate(
+          {
+            _id: bad_allotId,
+          },
+          {
+            $set: {
+              bookingFlag: true,
+            },
+          }
+        );
+        res.status(200).send("your bad has been booked");
+      } else {
+        res.status(400).send("go to booking page and try to book again");
+      }
     } else {
       res.status(400).send("otp is not verified");
     }
+  } catch (err) {
+    res.status(400).send(`err ${err}`);
+  }
+});
+// get by hospital
+router.put("/hospital/bookingbads", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const isVerified = true;
+    const token = req.body.cookie_token;
+    const dec = token.split(".")[1];
+    const decode = JSON.parse(atob(dec)); //contains hospitalid
+
+    const findBookingbad = await bookingBad.find({ hospitalId: decode });
+    let bookingTure = [];
+    for (let i = 0; i < findBookingbad.length; i++) {
+      if (findBookingbad[i].bookingFlag === true) {
+        bookingTure.push(findBookingbad[i]);
+      }
+    }
+    res.status(200).send(bookingTure);
+  } catch (err) {
+    res.status(400).send(`err ${err}`);
+  }
+});
+
+// get by patient
+router.post("/patient/bookingbads", async (req, res) => {
+  try {
+    const numMobile = req.body.phoneNum;
+    const findBookingbad = await bookingBad.find({ phoneNum: numMobile });
+    let bookingTure = [];
+
+    for (let i = 0; i < findBookingbad.length; i++) {
+      if (findBookingbad[i].bookingFlag === true) {
+        bookingTure.push(findBookingbad[i]);
+      }
+    }
+    res.status(200).send(bookingTure);
+  } catch (err) {
+    res.status(400).send(`err ${err}`);
+  }
+});
+
+/// id : bookingbadId
+router.get("/booking/:id", async (req, res) => {
+  try {
+    // const numMobile = req.body.phoneNum;
+    const findBookingbad = await bookingBad.findById(req.params.id);
+    res.status(200).send(findBookingbad);
+  } catch (err) {
+    res.status(400).send(`err ${err}`);
+  }
+});
+router.delete("/booking/:id", async (req, res) => {
+  try {
+    const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
+    res.status(200).send("Booking has been deleted.");
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }

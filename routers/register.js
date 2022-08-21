@@ -4,7 +4,27 @@ const Hospital = require("../schemas/hospital");
 const Bads = require("../schemas/bad");
 const jwt = require("jsonwebtoken");
 
+// get post post req
+router.post("/hospitalbyid", async (req, res) => {
+  try {
+    const id = req.body.id;
+    const dataHos = await Hospital.findById(id);
+    const badData = await Bads.find();
 
+    for (let i = 0; i < badData.length; i++) {
+      if(badData[i].hospitalId == id)
+      {
+       var matchbadData = badData[i];
+        break;
+      }
+    }  
+
+
+    res.status(200).send({ dataHos, matchbadData });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
 router.get("/hospital/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -15,7 +35,6 @@ router.get("/hospital/:id", async (req, res) => {
       if(badData[i].hospitalId == id)
       {
        var matchbadData = badData[i];
-        console.log(matchbadData);
         break;
       }
     }  

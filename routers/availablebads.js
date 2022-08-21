@@ -10,12 +10,9 @@ router.get("/bad/:id", async (req, res) => {
         const id = req.params.id;
         const findBad = await Bads.findById(id);
         const relatedHospital = await Hospital.findById(findBad.hospitalId);
-        const name = relatedHospital.name;
-        const email =  relatedHospital.email;
-        const state = relatedHospital.state;
-        const city = relatedHospital.city;
-        const hospitalType = relatedHospital.hospitalType;
-        const data = {findBad, name, email, hospitalType, state, city };
+        const HospitalName = relatedHospital.name;
+
+        const data = {findBad, HospitalName };
         res
             .status(200)
             .send(
