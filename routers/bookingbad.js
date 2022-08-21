@@ -18,10 +18,8 @@ router.put("/booking/:id", async (req, res) => {
       hospitalId: Id,
       patientName: req.body.patientName,
       email: req.body.email,
-      phoneNum: req.body.phoneNum,
       age: req.body.age,
       address: req.body.address,
-      NumberofBads: req.body.NumberofBads,
       type: req.body.type,
       otp: otp,
     });
@@ -84,7 +82,7 @@ router.put("/bookingbad/verify", async (req, res) => {
       if (findbadallot[0].bookingFlag === false) {
         if (findbadallot[0].type == "normal") {
           const badupdateNum =
-            findbad[0].generalType.availbility - findbadallot[0].NumberofBads;
+            findbad[0].generalType.availbility - 1;
           const priceperbad = findbad[0].generalType.pricePerbad;
           const type = findbad[0].generalType.type;
           console.log(badupdateNum);
@@ -104,7 +102,7 @@ router.put("/bookingbad/verify", async (req, res) => {
           );
         } else if (findbadallot[0].type == "special") {
           const badupdateNum =
-            findbad[0].specialType.availbility - findbadallot[0].NumberofBads;
+            findbad[0].specialType.availbility - 1;
           const priceperbad = findbad[0].specialType.pricePerbad;
           const type = findbad[0].specialType.type;
           console.log(badupdateNum);
@@ -145,9 +143,8 @@ router.put("/bookingbad/verify", async (req, res) => {
   }
 });
 // get by hospital
-router.put("/hospital/bookingbads", async (req, res) => {
+router.put("/hospital/bookingbads", verify,async (req, res) => {
   try {
-    const id = req.params.id;
     const isVerified = true;
     const token = req.body.cookie_token;
     const dec = token.split(".")[1];
@@ -167,6 +164,7 @@ router.put("/hospital/bookingbads", async (req, res) => {
 });
 
 // get by patient
+
 router.post("/patient/bookingbads", async (req, res) => {
   try {
     const numMobile = req.body.phoneNum;

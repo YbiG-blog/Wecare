@@ -5,6 +5,28 @@ const atob = require("atob");
 const verify = require("../middleware/auth");
 const router = new express.Router();
 
+
+// get id by post
+router.post("/badbyid", async (req, res) => {
+  try {
+      const id = req.body.id;
+      const findBad = await Bads.findById(id);
+      const relatedHospital = await Hospital.findById(findBad.hospitalId);
+      const HospitalName = relatedHospital.name;
+
+      const data = {findBad, HospitalName };
+      res
+          .status(200)
+          .send(
+              data
+          );
+      return;
+  } catch (err) {
+      res.status(400).send(`err ${err}`);
+      return;
+  }
+});
+
 router.get("/bad/:id", async (req, res) => {
     try {
         const id = req.params.id;
