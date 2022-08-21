@@ -18,8 +18,7 @@
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.4",
-    "nodemailer": "^6.7.8",
-    "twilio": "^3.80.1"
+    "nodemailer": "^6.7.8"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"

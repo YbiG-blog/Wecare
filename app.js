@@ -8,7 +8,7 @@ const addBads = require("./routers/addbads");
 const availableBds = require("./routers/availablebads");
 const bookingbad = require("./routers/bookingbad")
 const newslatter = require("./newslatter");
-const password = require("./routers/passforgot")
+
 
 require("./database/database");
 
@@ -48,7 +48,7 @@ app.use("/",addBads);
 app.use("/",availableBds);
 app.use("/bad",bookingbad);
 app.use("/",newslatter);
-app.use("/",password);
+
 
 /// https://sih-23.herokuapp.com/ 
 const port =process.env.PORT || 8000;

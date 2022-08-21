@@ -165,40 +165,40 @@ router.put("/hospital/bookingbads", verify,async (req, res) => {
 
 // get by patient
 
-router.post("/patient/bookingbads", async (req, res) => {
-  try {
-    const numMobile = req.body.phoneNum;
-    const findBookingbad = await bookingBad.find({ phoneNum: numMobile });
-    let bookingTure = [];
+// router.post("/patient/bookingbads", async (req, res) => {
+//   try {
+//     const numMobile = req.body.phoneNum;
+//     const findBookingbad = await bookingBad.find({ phoneNum: numMobile });
+//     let bookingTure = [];
 
-    for (let i = 0; i < findBookingbad.length; i++) {
-      if (findBookingbad[i].bookingFlag === true) {
-        bookingTure.push(findBookingbad[i]);
-      }
-    }
-    res.status(200).send(bookingTure);
-  } catch (err) {
-    res.status(400).send(`err ${err}`);
-  }
-});
+//     for (let i = 0; i < findBookingbad.length; i++) {
+//       if (findBookingbad[i].bookingFlag === true) {
+//         bookingTure.push(findBookingbad[i]);
+//       }
+//     }
+//     res.status(200).send(bookingTure);
+//   } catch (err) {
+//     res.status(400).send(`err ${err}`);
+//   }
+// });
 
-/// id : bookingbadId
-router.get("/booking/:id", async (req, res) => {
-  try {
-    // const numMobile = req.body.phoneNum;
-    const findBookingbad = await bookingBad.findById(req.params.id);
-    res.status(200).send(findBookingbad);
-  } catch (err) {
-    res.status(400).send(`err ${err}`);
-  }
-});
-router.delete("/booking/:id", async (req, res) => {
-  try {
-    const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
-    res.status(200).send("Booking has been deleted.");
-  } catch (err) {
-    res.status(400).send(`err ${err}`);
-  }
-});
+// /// id : bookingbadId
+// router.get("/booking/:id", async (req, res) => {
+//   try {
+//     // const numMobile = req.body.phoneNum;
+//     const findBookingbad = await bookingBad.findById(req.params.id);
+//     res.status(200).send(findBookingbad);
+//   } catch (err) {
+//     res.status(400).send(`err ${err}`);
+//   }
+// });
+// router.delete("/booking/:id", async (req, res) => {
+//   try {
+//     const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
+//     res.status(200).send("Booking has been deleted.");
+//   } catch (err) {
+//     res.status(400).send(`err ${err}`);
+//   }
+// });
 
 module.exports = router;
