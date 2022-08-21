@@ -7,7 +7,6 @@ const bookingSchema = new Schema({
   patientName: { type: String, required: true, minlength: 3 },
   email: { type: String, required: true, unique: false },
   age: { type: Number, required: true },
-  address: { type: String, required: true },
   type: { type: String, required: true },
   otp: {
     type: Number,
