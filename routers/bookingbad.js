@@ -54,7 +54,7 @@ router.put("/booking/:id", async (req, res) => {
       }
     });
 
-    const msg = "your bad has been sent";
+    const msg = "Otp has been sent";
     const otpsent = bads_allot.otp;
     res.status(201).send({ msg, badallotid, badId, otpsent });
   } catch (err) {
