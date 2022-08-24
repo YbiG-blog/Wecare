@@ -222,7 +222,9 @@ router.post("/patient/bookingbads", async (req, res) => {
 
     for (let i = 0; i < findBookingbad.length; i++) {
       if (findBookingbad[i].bookingFlag === true) {
-        bookingTure.push(findBookingbad[i]);
+        let res1 = findBookingbad[i];
+        const hospitalRes = await Hospital.findById(findBookingbad[i].hospitalId);
+        bookingTure.push({res1,hospitalRes});
       }
     }
     res.status(200).send(bookingTure);
@@ -236,6 +238,7 @@ router.get("/booking/:id", async (req, res) => {
   try {
     // const numMobile = req.body.phoneNum;
     const findBookingbad = await bookingBad.findById(req.params.id);
+    if(!findBookingbad) res.status(404).send("Bed is not found")
     res.status(200).send(findBookingbad);
   } catch (err) {
     res.status(400).send(`err ${err}`);
@@ -244,6 +247,7 @@ router.get("/booking/:id", async (req, res) => {
 router.delete("/booking/:id", async (req, res) => {
   try {
     const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
+    if(!findBookingbad) res.status(404).send(`This data is not found`);
     res.status(200).send("Booking has been deleted.");
   } catch (err) {
     res.status(400).send(`err ${err}`);

@@ -55,8 +55,8 @@ router.patch("/bad/:id", verify, async (req, res) => {
       const token = req.body.cookie_token;
       const dec = token.split(".")[1];
       const decode = JSON.parse(atob(dec)); //contains hospitalid
+      console.log(decode._id);
     const findbad = await Bads.findById(id);
-
      console.log(findbad.hospitalId);
       if(findbad.hospitalId == decode._id){
       const data = await Bads.findOneAndUpdate( {

@@ -1,26 +1,23 @@
 const express = require("express");
-const Patient = require("../schemas/patient");
 const Hospital = require("../schemas/hospital");
-
+const Beds = require("../schemas/bad");
 const router = new express.Router();
 
 router.get("/hospitals", async (req, res) => {
   try {
     const allHospital = await Hospital.find();
-
-    res.status(200).send(allHospital);
+    let result = [];
+    
+    for (let i = 0; i < allHospital.length; i++) {
+      let findBed = await Beds.find({ hospitalId : allHospital[i]._id});
+      console.log(findBed);
+      let Hos = allHospital[i];
+      result.push({Hos, findBed});
+    }
+    res.status(200).send(result);
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(`err ${err}`);
   }
 });
 
-// router.get("/patients", async (req, res) => {
-//     try {
-//       const allPatient = await Patient.find();
-
-//       res.status(200).send(allPatient);
-//     } catch (err) {
-//       res.status(500).send(err);
-//     }
-//   });
 module.exports = router;
