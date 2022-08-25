@@ -111,4 +111,24 @@ router.get("/bads", async (req, res) => {
     }
 });
 
+router.get("/bads/:type", async (req, res) => {
+  try {
+    let type = req.params.type;
+if(type=="General"){
+      const findBads = await Bads.find()
+      .sort({ "generalType.availbility": -1 });
+      res.status(200).send(findBads);
+}
+else{
+   findBads = await Bads.find()
+      .sort({ "specialType.availbility": -1 });
+      res.status(200).send(findBads);
+}
+      return;
+  } catch (err) {
+      res.status(400).send(`err ${err}`);
+      return;
+  }
+});
+
 module.exports = router;

@@ -13,6 +13,7 @@ const bookingSchema = new Schema({
     required: true,
   },
   bookingFlag: { type: Boolean, default: false },
+  hospitalFlag : { type: Boolean, default: false }
 });
 
 const Bookingbad = new mongoose.model("Bookingbad", bookingSchema);
