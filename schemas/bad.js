@@ -15,7 +15,6 @@ const badSchema = new Schema({
   pricePerbad: { type: Number, required: true }
   },
   otherFacilities:{ type: String , required: true},
-  // booking: { type: Boolean, default : false }
 });
 
 const Bad = new mongoose.model("Bad", badSchema);

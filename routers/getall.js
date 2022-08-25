@@ -7,19 +7,6 @@ const router = new express.Router();
 router.get("/hospitals", async (req, res) => {
   try {
     const allHospital = await Hospital.find();
-    // let result = [],bedObj=[]; 
-    // for (let i = 0; i < allHospital.length; i++) {
-    //   let findBed = await Beds.find({ hospitalId : allHospital[i]._id });
-    //   let Hos = allHospital[i];
-    //   let bedres=findBed[0];
-    //   // var sumOfBed = bedres.generalType.availbility + bedres.specialType.availbility;
-    //   // console.log(sumOfBed);
-    //   result.push({Hos, bedres});
-    //   bedObj.push(bedres);
-    // }
-    // for (let i = 0; i < bedObj.length; i++) {
-    //  console.log(bedObj[1].generalType.availbility);
-    // }
     res.status(200).send(allHospital);
   } catch (err) {
     res.status(500).send(`err ${err}`);
@@ -35,5 +22,18 @@ router.get("/hospitals/:city", async (req, res) => {
     res.status(500).send(`err ${err}`);
   }
 });
+router.get("/datadistrict", async(req,res)=>{
+  // const availableBeds = await Beds.find({
+
+  // }).countDocuments()
+  let s = 0;
+  const availableBeds = await Beds.find();
+  for (let i = 0; i < availableBeds.length; i++) {
+    let d= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility;
+    s+=d;
+  }
+  console.log(s);
+  res.status(200).send(`${s}`);
+})
 
 module.exports = router;

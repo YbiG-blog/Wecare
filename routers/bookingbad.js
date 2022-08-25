@@ -17,6 +17,7 @@ router.put("/booking/:id", async (req, res) => {
     let bads_allot = new bookingBad({
       hospitalId: Id,
       patientName: req.body.patientName,
+      Adhar: req.body.Adhar,
       email: req.body.email,
       age: req.body.age,
       type: req.body.type,
@@ -208,6 +209,7 @@ router.put("/bookingbyhospital", verify, async (req, res) => {
     let bads_allot = new bookingBad({
       hospitalId: decode._id,
       patientName: req.body.patientName,
+      Adhar: req.body.Adhar,
       email: req.body.email,
       age: req.body.age,
       type: req.body.type,

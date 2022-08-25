@@ -19,6 +19,10 @@ const HospitalSchema = new mongoose.Schema({
   address : { type: String, required: true },
   state: { type: String, required: true },
   city: { type: String, required: true },
+  pincode: {  type: Number,
+    required: true,
+    maxlength: 6,
+    minlength: 6 },
   hospitalType: { type: Boolean, default: false }, // private or government ... true for - government and false for - private
 });
 
