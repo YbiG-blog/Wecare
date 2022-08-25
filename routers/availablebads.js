@@ -84,6 +84,11 @@ router.patch("/bad/:id", verify, async (req, res) => {
   
       const id = req.params.id;
       const findbad = await Bads.findById(id);
+      if(!findbad)
+      {
+        res.status(404).send("data not found");  
+        return;
+      }
      console.log(findbad.hospitalId);
       if(findbad.hospitalId == decode._id){
       const data = await Bads.findByIdAndDelete({

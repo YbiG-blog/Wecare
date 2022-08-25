@@ -16,8 +16,27 @@ router.get("/hospitals/:city", async (req, res) => {
   try {
     let citywise = _.lowerCase(req.params.city);
     const allHospital = await Hospital.find({ city : citywise });
-   
+   if(allHospital.length === 0 ){ res.status(404).send("No bad available in this area");
+   return;}
     res.status(200).send(allHospital);
+  } catch (err) {
+    res.status(500).send(`err ${err}`);
+  }
+});
+router.get("/hospitalsby/:pincode", async (req, res) => {
+  try {
+    let pinwise = req.params.pincode;
+    const allHospital = await Hospital.find();
+    let hosdata = [];
+    for (let i = 0; i < allHospital.length; i++) {
+      if(allHospital[i].pincode== pinwise){
+hosdata.push(allHospital[i]);
+      }
+    }
+   if(hosdata.length === 0 ){ res.status(404).send("No bad available in this area");
+   return;
+  }
+    res.status(200).send(hosdata);
   } catch (err) {
     res.status(500).send(`err ${err}`);
   }
