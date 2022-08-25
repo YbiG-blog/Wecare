@@ -182,7 +182,7 @@ router.put("/bookingbad/verify", async (req, res) => {
         res
           .status(200)
           .send(
-            "your bad has been booked temporay and for  confirmation go to on hospital dask"
+            "your bad has been booked"
           );
       } else {
         res.status(400).send("go to booking page and try to book again");
