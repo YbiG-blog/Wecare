@@ -82,7 +82,7 @@ const hosEmail = findHospital.email;
     // console.log(emailpatient);
     if (otpVerify === findbadallot[0].otp) {
       if (findbadallot[0].bookingFlag === false) {
-        if (findbadallot[0].type == "normal") {
+        if (findbadallot[0].type == "General") {
           const badupdateNum = findbad[0].generalType.availbility - 1;
           const priceperbad = findbad[0].generalType.pricePerbad;
           const type = findbad[0].generalType.type;
@@ -126,7 +126,7 @@ const hosEmail = findHospital.email;
             }
           });
 
-        } else if (findbadallot[0].type == "special") {
+        } else if (findbadallot[0].type == "Special") {
           const badupdateNum = findbad[0].specialType.availbility - 1;
           const priceperbad = findbad[0].specialType.pricePerbad;
           const type = findbad[0].specialType.type;
