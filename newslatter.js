@@ -47,8 +47,5 @@ router.post("/contact",function(req,res){
     request.end();
 });
 
-// router.post("/fail",function(req,res){
-//     res.redirect("/contact");
-// })
 
 module.exports = router;

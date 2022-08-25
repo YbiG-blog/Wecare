@@ -1,9 +1,9 @@
-// require("dotenv").config();
-// const express = require("express");
-// // const Patient = require("../schemas/patient");
-// // const Hospital = require("../schemas/hospital");
+require("dotenv").config();
+const express = require("express");
+// const Patient = require("../schemas/patient");
+// const Hospital = require("../schemas/hospital");
 
-// const router = new express.Router();
+const router = new express.Router();
 
 // // // password for patient
 // // router.post('/patinet/passwordforgot',async(req,res,next) =>
@@ -137,24 +137,24 @@
 // // Find your Account SID and Auth Token at twilio.com/console
 // // and set the environment variables. See http://twil.io/secure
 
-// const accountSid = process.env.TWILIO_ACCOUNT_SID;
-// const authToken = process.env.TWILIO_AUTH_TOKEN;
-// const client = require('twilio')(accountSid, authToken);
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
 
-// router.get("/otpsend", async(req,res)=>{
-// const t={
-//     "g":"dfggt",
-//     k:343
-// }
-//     client.messages
-//       .create({
-//          from: '+19803602592',
-//          to: '+917818052057',
-//          body: `${t}`,
-//        })
-//       .then(message => res.status(200).send(`msg sent\n ${message}`))
-//       .catch((err)=> res.status(401).send(err));
+router.get("/otpsend", async(req,res)=>{
+const t={
+    "g":"dfggt",
+    k:343
+}
+    client.messages
+      .create({
+         from: '+12486174750',
+         to: '+919458031015',
+         body: `2321`,
+       })
+      .then(message => res.status(200).send(`msg sent\n ${message}`))
+      .catch((err)=> res.status(401).send(err));
 
-// })
+})
 
-// module.exports = router; 
+module.exports = router; 
