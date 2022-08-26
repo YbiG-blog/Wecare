@@ -124,7 +124,7 @@ if(type=="General"){
       .sort({ "generalType.availbility": -1 });
       res.status(200).send(findBads);
 }
-else{
+else if(type=="Special"){
    findBads = await Bads.find()
       .sort({ "specialType.availbility": -1 });
       res.status(200).send(findBads);
