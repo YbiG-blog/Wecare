@@ -43,38 +43,31 @@ hosdata.push(allHospital[i]);
   }
 });
 router.get("/datadistrict", async(req,res)=>{
-  // const availableBeds = await Beds.find({
-
-  // }).countDocuments()
-  // let s = 0;
-  // const availableBeds = await Beds.find();
-  // for (let i = 0; i < availableBeds.length; i++) {
-  //   let d= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility;
-  //   s+=d;
-  // }
-  // console.log(s);
-  let bedsj=0;
+  let bedsj=0,numhj=0;
   const findbedJ = await Hospital.find({ city : "jaipur"});
 for (let i = 0; i < findbedJ.length; i++) {
 let id = findbedJ[i]._id ;
   const availableBeds = await Beds.find({HospitalId : id});
- bedsj+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility
+ bedsj+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility;
+ numhj+=1;
 }
-let bedsk=0;
+let bedsk=0, numhk=0;
 const findbedk = await Hospital.find({ city : "kota"});
 for (let i = 0; i < findbedk.length; i++) {
 let id = findbedk[i]._id ;
 const availableBeds = await Beds.find({HospitalId : id});
-bedsk+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility
+bedsk+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility;
+numhk+=1;
 }
-let bedsa=0;
+let bedsa=0, numha=0;
 const findbeda = await Hospital.find({ city : "ajmer"});
 for (let i = 0; i < findbeda.length; i++) {
 let id = findbeda[i]._id ;
 const availableBeds = await Beds.find({HospitalId : id});
-bedsa+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility
+bedsa+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility;
+numha+=1;
 }
-const result ={bedsj,bedsk,bedsa};
+const result ={bedsj,bedsk,bedsa,numhj,numhk,numha};
   res.status(200).send(result);
 })
 
