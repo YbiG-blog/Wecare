@@ -458,13 +458,15 @@ router.get("/booking/:id", async (req, res) => {
 });
 router.delete("/booking/:id", async (req, res) => {
   try {
-    const findBookingbad = await bookingBad.findByIdAndDelete(
+    const findBookingbad = await bookingBad.findById(
       req.params.id.trim()
     );
-
+    const findBookingbad2 = await bookingBad.findByIdAndDelete(
+      req.params.id.trim()
+    );
     const id = findBookingbad.hospitalId;
     const findBed = await Bad.find({ hospitalId: id });
-    console.log(id);
+    console.log(findBed);
     const emailpatient = findBookingbad.email;
     if (findBookingbad.type == "General") {
       const badupdateNum = findBed[0].generalType.availbility + 1;
