@@ -455,44 +455,44 @@ router.delete("/booking/:id", async (req, res) => {
   try {
     const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
 
-    const id = findBookingbad.hospitalId;  
-    const findBed = await Bad.find({hospitalId : id });
-    // console.log(findBed);
+    // const id = findBookingbad.hospitalId;  
+    // const findBed = await Bad.find({hospitalId : id });
+    // // console.log(findBed);
 
-    if(findBookingbad.type == "General"){
-      const badupdateNum = findBed[0].generalType.availbility + 1;
-          const priceperbad = findBed[0].generalType.pricePerbad;
-          const type = findBed[0].generalType.type;
-          // console.log(badupdateNum);
-          const data = await Bad.findOneAndUpdate( {
-            _id: findBed[0]._id
-          },{
-            $set:{
-              generalType: {
-                type: type,
-                availbility: badupdateNum,
-                pricePerbad: priceperbad,
-              },
-            },
-          });
-    }
-    else{
-      const badupdateNum = findBed[0].specialType.availbility + 1;
-      const priceperbad = findBed[0].specialType.pricePerbad;
-      const type = findBed[0].specialType.type;
-      // console.log(badupdateNum);
-      const data = await Bad.findOneAndUpdate( {
-        _id: findBed[0]._id
-      },{
-        $set:{
-          specialType: {
-            type: type,
-            availbility: badupdateNum,
-            pricePerbad: priceperbad,
-          },
-        },
-      });
-    }
+    // if(findBookingbad.type == "General"){
+    //   const badupdateNum = findBed[0].generalType.availbility + 1;
+    //       const priceperbad = findBed[0].generalType.pricePerbad;
+    //       const type = findBed[0].generalType.type;
+    //       // console.log(badupdateNum);
+    //       const data = await Bad.findOneAndUpdate( {
+    //         _id: findBed[0]._id
+    //       },{
+    //         $set:{
+    //           generalType: {
+    //             type: type,
+    //             availbility: badupdateNum,
+    //             pricePerbad: priceperbad,
+    //           },
+    //         },
+    //       });
+    // }
+    // else{
+    //   const badupdateNum = findBed[0].specialType.availbility + 1;
+    //   const priceperbad = findBed[0].specialType.pricePerbad;
+    //   const type = findBed[0].specialType.type;
+    //   // console.log(badupdateNum);
+    //   const data = await Bad.findOneAndUpdate( {
+    //     _id: findBed[0]._id
+    //   },{
+    //     $set:{
+    //       specialType: {
+    //         type: type,
+    //         availbility: badupdateNum,
+    //         pricePerbad: priceperbad,
+    //       },
+    //     },
+    //   });
+    // }
 
     res.status(200).send("Booking has been deleted.");
   } catch (err) {
