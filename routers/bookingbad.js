@@ -451,13 +451,9 @@ router.get("/booking/:id", async (req, res) => {
     res.status(400).send(`err ${err}`);
   }
 });
-router.delete("/booking/:id", verify, async (req, res) => {
+router.delete("/booking/:id", async (req, res) => {
   try {
-    const isVerified = true;
-    const token = req.body.cookie_token;
-    const dec = token.split(".")[1];
-    const decode = JSON.parse(atob(dec)); //contains hospitalid
-    
+
     const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
 
     // const id = findBookingbad.hospitalId;  
