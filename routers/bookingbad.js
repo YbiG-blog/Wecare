@@ -11,7 +11,14 @@ const nodemailer = require("nodemailer");
 router.put("/booking/:id", async (req, res) => {
   try {
     const Id = req.params.id;
-
+const bookingBeds = await bookingBad.find();
+for (let i = 0; i < bookingBeds.length; i++) {
+  if(bookingBeds[i].Adhar == req.body.Adhar)
+  {
+    res.status(400).send("adhar is already exist");
+    return;
+  }
+}
     const otp = Math.floor(100000 + Math.random() * 900000);
     console.log(otp);
 
