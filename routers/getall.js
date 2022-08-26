@@ -53,13 +53,29 @@ router.get("/datadistrict", async(req,res)=>{
   //   s+=d;
   // }
   // console.log(s);
+  let bedsj=0;
   const findbedJ = await Hospital.find({ city : "jaipur"});
 for (let i = 0; i < findbedJ.length; i++) {
 let id = findbedJ[i]._id ;
   const availableBeds = await Beds.find({HospitalId : id});
-  console.log(availableBeds);
+ bedsj+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility
 }
-  res.status(200).send(findbedJ);
+let bedsk=0;
+const findbedk = await Hospital.find({ city : "kota"});
+for (let i = 0; i < findbedk.length; i++) {
+let id = findbedk[i]._id ;
+const availableBeds = await Beds.find({HospitalId : id});
+bedsk+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility
+}
+let bedsa=0;
+const findbeda = await Hospital.find({ city : "ajmer"});
+for (let i = 0; i < findbeda.length; i++) {
+let id = findbeda[i]._id ;
+const availableBeds = await Beds.find({HospitalId : id});
+bedsa+= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility
+}
+const result ={bedsj,bedsk,bedsa};
+  res.status(200).send(result);
 })
 
 module.exports = router;
