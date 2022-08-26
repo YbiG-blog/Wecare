@@ -446,8 +446,6 @@ router.post("/patient/bookingbads", async (req, res) => {
 router.get("/booking/:id", async (req, res) => {
   try {
     const findBookingbad = await bookingBad.findById(req.params.id);
-    if (!findBookingbad){ res.status(404).send("Bed is not found"); 
-    return;}
     res.status(200).send(findBookingbad);
   } catch (err) {
     res.status(400).send(`err ${err}`);
@@ -456,10 +454,6 @@ router.get("/booking/:id", async (req, res) => {
 router.delete("/booking/:id", async (req, res) => {
   try {
     const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
-
-    if (!findBookingbad){ res.status(404).send(`This data is not found`);
-    return;
-  }
 
     const id = findBookingbad.hospitalId;  
     const findBed = await Bad.find({hospitalId : id });
