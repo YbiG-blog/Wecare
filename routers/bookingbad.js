@@ -14,6 +14,7 @@ router.put("/booking/:id", async (req, res) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000);
     console.log(otp);
+
     let bads_allot = new bookingBad({
       hospitalId: Id,
       patientName: req.body.patientName,
@@ -30,6 +31,7 @@ router.put("/booking/:id", async (req, res) => {
       hospitalId: Id,
     });
     const badid = findbad[0]._id;
+    console.log(bads_allot.id);
 
     /// otp sent to your email
     console.log(bads_allot.email);
@@ -180,11 +182,7 @@ router.put("/bookingbad/verify", async (req, res) => {
             },
           }
         );
-        res
-          .status(200)
-          .send(
-            "your bad has been booked"
-          );
+        res.status(200).send("your bad has been booked");
       } else {
         res.status(400).send("go to booking page and try to book again");
       }
@@ -323,7 +321,6 @@ router.put("/bookingbyhospital/verify", verify, async (req, res) => {
               console.log("OTP sent");
             }
           });
-
         } else if (findbadallot[0].type == "Special") {
           const badupdateNum = findbad[0].specialType.availbility - 1;
           const priceperbad = findbad[0].specialType.pricePerbad;
@@ -401,19 +398,26 @@ router.put("/hospital/bookingbads/:type", verify, async (req, res) => {
 
     const findBookingbad = await bookingBad.find({ hospitalId: decode });
     let type = req.params.type;
-    let generalbed = [], specialbed = [];
+    let generalbed = [],
+      specialbed = [];
     for (let i = 0; i < findBookingbad.length; i++) {
-      if ((findBookingbad[i].bookingFlag === true ) && (findBookingbad[i].type == "General")) {
+      if (
+        findBookingbad[i].bookingFlag === true &&
+        findBookingbad[i].type == "General"
+      ) {
         generalbed.push(findBookingbad[i]);
       }
     }
     for (let i = 0; i < findBookingbad.length; i++) {
-      if ((findBookingbad[i].bookingFlag === true ) && (findBookingbad[i].type == "Special")) {
+      if (
+        findBookingbad[i].bookingFlag === true &&
+        findBookingbad[i].type == "Special"
+      ) {
         specialbed.push(findBookingbad[i]);
       }
     }
-if(type == "General") res.status(200).send(generalbed);
-else  res.status(200).send(specialbed);
+    if (type == "General") res.status(200).send(generalbed);
+    else res.status(200).send(specialbed);
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
@@ -441,11 +445,12 @@ router.post("/patient/bookingbads", async (req, res) => {
     res.status(400).send(`err ${err}`);
   }
 });
-
 /// id : bookingbadId
 router.get("/booking/:id", async (req, res) => {
   try {
-    const findBookingbad = await bookingBad.findById(req.params.id);
+    console.log(req.params.id.trim());
+    const findBookingbad = await bookingBad.findById(req.params.id.trim());
+    console.log(findBookingbad);
     res.status(200).send(findBookingbad);
   } catch (err) {
     res.status(400).send(`err ${err}`);
@@ -453,53 +458,106 @@ router.get("/booking/:id", async (req, res) => {
 });
 router.delete("/booking/:id", async (req, res) => {
   try {
+    const findBookingbad = await bookingBad.findByIdAndDelete(
+      req.params.id.trim()
+    );
 
-    const findBookingbad = await bookingBad.findByIdAndDelete(req.params.id);
+    const id = findBookingbad.hospitalId;
+    const findBed = await Bad.find({ hospitalId: id });
+    console.log(id);
+    const emailpatient = findBookingbad.email;
+    if (findBookingbad.type == "General") {
+      const badupdateNum = findBed[0].generalType.availbility + 1;
+      const priceperbad = findBed[0].generalType.pricePerbad;
+      const type = findBed[0].generalType.type;
+      // console.log(badupdateNum);
+      const data = await Bad.findOneAndUpdate(
+        {
+          _id: findBed[0]._id,
+        },
+        {
+          $set: {
+            generalType: {
+              type: type,
+              availbility: badupdateNum,
+              pricePerbad: priceperbad,
+            },
+          },
+        }
+      );
+      /// opt for discharged
 
-    // const id = findBookingbad.hospitalId;  
-    // const findBed = await Bad.find({hospitalId : id });
-    // // console.log(findBed);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.AUTHEREMAIL,
+          pass: process.env.AUTHERPASS,
+        },
+      });
 
-    // if(findBookingbad.type == "General"){
-    //   const badupdateNum = findBed[0].generalType.availbility + 1;
-    //       const priceperbad = findBed[0].generalType.pricePerbad;
-    //       const type = findBed[0].generalType.type;
-    //       // console.log(badupdateNum);
-    //       const data = await Bad.findOneAndUpdate( {
-    //         _id: findBed[0]._id
-    //       },{
-    //         $set:{
-    //           generalType: {
-    //             type: type,
-    //             availbility: badupdateNum,
-    //             pricePerbad: priceperbad,
-    //           },
-    //         },
-    //       });
-    // }
-    // else{
-    //   const badupdateNum = findBed[0].specialType.availbility + 1;
-    //   const priceperbad = findBed[0].specialType.pricePerbad;
-    //   const type = findBed[0].specialType.type;
-    //   // console.log(badupdateNum);
-    //   const data = await Bad.findOneAndUpdate( {
-    //     _id: findBed[0]._id
-    //   },{
-    //     $set:{
-    //       specialType: {
-    //         type: type,
-    //         availbility: badupdateNum,
-    //         pricePerbad: priceperbad,
-    //       },
-    //     },
-    //   });
-    // }
+      const mailOptions = {
+        from: process.env.AUTHEREMAIL,
+        to: emailpatient,
+        subject: "discharged",
+        text: `You have been discharged\n We wish for a healthy life`,
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("OTP sent");
+        }
+      });
+    } else {
+      const badupdateNum = findBed[0].specialType.availbility + 1;
+      const priceperbad = findBed[0].specialType.pricePerbad;
+      const type = findBed[0].specialType.type;
+      // console.log(badupdateNum);
+      const data = await Bad.findOneAndUpdate(
+        {
+          _id: findBed[0]._id,
+        },
+        {
+          $set: {
+            specialType: {
+              type: type,
+              availbility: badupdateNum,
+              pricePerbad: priceperbad,
+            },
+          },
+        }
+      );
+      /// opt for discharged
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.AUTHEREMAIL,
+          pass: process.env.AUTHERPASS,
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.AUTHEREMAIL,
+        to: emailpatient,
+        subject: "discharged",
+        text: `You have been discharged\n We wish for a healthy life`,
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("OTP sent");
+        }
+      });
+    }
 
     res.status(200).send("Booking has been deleted.");
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
 });
+
 router.put("/patientbadconfirm", verify, async (req, res) => {
   try {
     const isVerified = true;
