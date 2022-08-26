@@ -15,7 +15,7 @@ router.get("/hospitals", async (req, res) => {
 });
 router.get("/hospitals/:city", async (req, res) => {
   try {
-    let citywise = _.lowerCase(req.params.city);
+    let citywise = req.params.city;
     const allHospital = await Hospital.find({ city : citywise });
    if(allHospital.length === 0 ){ res.status(404).send("No bad available in this area");
    return;}
