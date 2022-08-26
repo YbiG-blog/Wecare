@@ -2,6 +2,7 @@ const express = require("express");
 const Hospital = require("../schemas/hospital");
 const Beds = require("../schemas/bad");
 const _ = require('lodash');
+const { find } = require("lodash");
 const router = new express.Router();
 
 router.get("/hospitals", async (req, res) => {
@@ -45,14 +46,20 @@ router.get("/datadistrict", async(req,res)=>{
   // const availableBeds = await Beds.find({
 
   // }).countDocuments()
-  let s = 0;
-  const availableBeds = await Beds.find();
-  for (let i = 0; i < availableBeds.length; i++) {
-    let d= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility;
-    s+=d;
-  }
-  console.log(s);
-  res.status(200).send(`${s}`);
+  // let s = 0;
+  // const availableBeds = await Beds.find();
+  // for (let i = 0; i < availableBeds.length; i++) {
+  //   let d= availableBeds[i].generalType.availbility+availableBeds[i].specialType.availbility;
+  //   s+=d;
+  // }
+  // console.log(s);
+  const findbedJ = await Hospital.find({ city : "jaipur"});
+for (let i = 0; i < findbedJ.length; i++) {
+let id = findbedJ[i]._id ;
+  const availableBeds = await Beds.find({HospitalId : id});
+  console.log(availableBeds);
+}
+  res.status(200).send(findbedJ);
 })
 
 module.exports = router;

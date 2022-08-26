@@ -3,6 +3,7 @@ const express = require("express");
 const https=require("https");
 const router = new express.Router();
 
+
 router.post("/contact",function(req,res){
     var nm1=req.body.namefst;
     var nm2=req.body.namelst;
@@ -46,6 +47,5 @@ router.post("/contact",function(req,res){
     request.write(jsondata);
     request.end();
 });
-
 
 module.exports = router;

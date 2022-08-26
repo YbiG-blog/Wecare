@@ -79,7 +79,6 @@ router.post("/registerhospital", async (req, res) => {
     const {
       name,
       email,
-      Hospitalid,
       mobileNum,
       password,
       address,
@@ -97,7 +96,6 @@ router.post("/registerhospital", async (req, res) => {
     const hospital_create = new Hospital({
       name,
       email,
-      Hospitalid,
       mobileNum,
       password,
       address,
