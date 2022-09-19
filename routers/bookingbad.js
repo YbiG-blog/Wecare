@@ -26,7 +26,6 @@ router.put("/booking/:id", async (req, res) => {
       otp: otp,
     });
     await bads_allot.save();
-    const badallotid = bads_allot._id;
 
     /// otp sent to your email
     console.log(bads_allot.email);
@@ -42,7 +41,7 @@ router.put("/booking/:id", async (req, res) => {
       from: process.env.AUTHEREMAIL,
       to: bads_allot.email,
       subject: "Otp for verification",
-      text: `your otp is given below \n ${bads_allot.otp}`,
+      text: `your otp is given below \n ${otp}`,
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -53,8 +52,8 @@ router.put("/booking/:id", async (req, res) => {
     });
 
     const msg = "Otp has been sent";
-    const otpsent = bads_allot.otp;
-    res.status(201).send({ msg, badallotid, otpsent });
+    const bedallotId =  bads_allot._id;
+    res.status(201).send({ msg, bedallotId, otp});
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
