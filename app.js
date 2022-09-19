@@ -1,13 +1,13 @@
 require("dotenv").config();
 const express = require("express")
 const cookieParser = require("cookie-parser");
-const register_router = require("./routers/register");
-const login_router = require("./routers/login");
+const registerRouter = require("./routers/register");
+const loginRouter = require("./routers/login");
 const all = require("./routers/getall")
 const addBads = require("./routers/addbads");
 const availableBds = require("./routers/availablebads");
-const bookingbad = require("./routers/bookingbad")
-const newslatter = require("./newslatter");
+const bookingBad = require("./routers/bookingbad")
+const newsLatter = require("./newslatter");
 
 
 require("./database/database");
@@ -41,13 +41,13 @@ app.use(cookieParser());
 
 // routers -------------------
 
-app.use("/", register_router);
-app.use("/", login_router);
+app.use("/", registerRouter);
+app.use("/", loginRouter);
 app.use("/all/", all);
 app.use("/",addBads);
 app.use("/",availableBds);
-app.use("/bad",bookingbad);
-app.use("/",newslatter);
+app.use("/bad",bookingBad);
+app.use("/",newsLatter);
 
 
 /// https://sih-23.herokuapp.com/ 

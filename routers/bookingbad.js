@@ -10,35 +10,23 @@ const nodemailer = require("nodemailer");
 
 router.put("/booking/:id", async (req, res) => {
   try {
-    const Id = req.params.id;
-const bookingBeds = await bookingBad.find();
-for (let i = 0; i < bookingBeds.length; i++) {
-  if(bookingBeds[i].Adhar == req.body.Adhar)
-  {
-    res.status(400).send("adhar is already exist");
-    return;
-  }
-}
+    const {Id} = req.params.id;
+
     const otp = Math.floor(100000 + Math.random() * 900000);
     console.log(otp);
 
+    const { patientName, Adhar, email, age, type } = req.body;
     let bads_allot = new bookingBad({
       hospitalId: Id,
-      patientName: req.body.patientName,
-      Adhar: req.body.Adhar,
-      email: req.body.email,
-      age: req.body.age,
-      type: req.body.type,
+      patientName,
+      Adhar,
+      email,
+      age,
+      type,
       otp: otp,
     });
     await bads_allot.save();
     const badallotid = bads_allot._id;
-
-    const findbad = await Bad.find({
-      hospitalId: Id,
-    });
-    const badid = findbad[0]._id;
-    console.log(bads_allot.id);
 
     /// otp sent to your email
     console.log(bads_allot.email);
@@ -66,7 +54,7 @@ for (let i = 0; i < bookingBeds.length; i++) {
 
     const msg = "Otp has been sent";
     const otpsent = bads_allot.otp;
-    res.status(201).send({ msg, badallotid, badid, otpsent });
+    res.status(201).send({ msg, badallotid, otpsent });
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
@@ -204,20 +192,20 @@ router.put("/bookingbad/verify", async (req, res) => {
 
 router.put("/bookingbyhospital", verify, async (req, res) => {
   try {
-    const isVerified = true;
     const token = req.body.cookie_token;
     const dec = token.split(".")[1];
     const decode = JSON.parse(atob(dec)); //contains hospitalid
 
     const otp = Math.floor(100000 + Math.random() * 900000);
     console.log(otp);
+    const { patientName, Adhar, email, age, type } = req.body;
     let bads_allot = new bookingBad({
       hospitalId: decode._id,
-      patientName: req.body.patientName,
-      Adhar: req.body.Adhar,
-      email: req.body.email,
-      age: req.body.age,
-      type: req.body.type,
+      patientName,
+      Adhar,
+      email,
+      age,
+      type,
       otp: otp,
     });
     await bads_allot.save();
@@ -465,9 +453,7 @@ router.get("/booking/:id", async (req, res) => {
 });
 router.delete("/booking/:id", async (req, res) => {
   try {
-    const findBookingbad = await bookingBad.findById(
-      req.params.id.trim()
-    );
+    const findBookingbad = await bookingBad.findById(req.params.id.trim());
     const findBookingbad2 = await bookingBad.findByIdAndDelete(
       req.params.id.trim()
     );
