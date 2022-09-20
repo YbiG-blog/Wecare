@@ -38,7 +38,7 @@ HospitalSchema.methods.generateAuthToken = async function () {
 // password encryption------------
 HospitalSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, saltRounds);
+    this.password = bcrypt.hash(this.password, saltRounds);
   }
   next();
 });

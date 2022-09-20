@@ -5,14 +5,13 @@ const router = new express.Router();
 
 
 // login route for hospital
-router.post("/loginhospital", async (req, res) => {
+router.post("/loginhospital", async ({body}, res) => {
   try {
-    const password = req.body.password;
-    const email = req.body.email;
+    const {password, email} = body;
 
     const hospitalCheck = await Hospital.findOne({ email: email });
     if (hospitalCheck) {
-      const match_password = await bcrypt.compare(
+      const match_password = bcrypt.compare(
         password,
         hospitalCheck.password
       );

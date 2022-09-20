@@ -10,10 +10,9 @@ const nodemailer = require("nodemailer");
 
 router.put("/booking/:id", async (req, res) => {
   try {
-    const {Id} = req.params.id;
-
+    const { Id } = req.params.id;
+    const findBad = await Bad.findOne({ hospitalId: req.params.id });
     const otp = Math.floor(100000 + Math.random() * 900000);
-    console.log(otp);
 
     const { patientName, Adhar, email, age, type } = req.body;
     let bads_allot = new bookingBad({
@@ -25,7 +24,7 @@ router.put("/booking/:id", async (req, res) => {
       type,
       otp: otp,
     });
-    await bads_allot.save();
+    bads_allot.save();
 
     /// otp sent to your email
     console.log(bads_allot.email);
@@ -41,7 +40,7 @@ router.put("/booking/:id", async (req, res) => {
       from: process.env.AUTHEREMAIL,
       to: bads_allot.email,
       subject: "Otp for verification",
-      text: `your otp is given below \n ${otp}`,
+      text: `Please verify with below otp \n ${otp}`,
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -52,8 +51,9 @@ router.put("/booking/:id", async (req, res) => {
     });
 
     const msg = "Otp has been sent";
-    const bedallotId =  bads_allot._id;
-    res.status(201).send({ msg, bedallotId, otp});
+    const badallotId = bads_allot._id,
+      badId = findBad._id;
+    res.status(201).send({ msg, badallotId, badId, otp });
   } catch (err) {
     res.status(400).send(`err ${err}`);
   }
@@ -61,121 +61,73 @@ router.put("/booking/:id", async (req, res) => {
 
 router.put("/bookingbad/verify", async (req, res) => {
   try {
-    const bad_allotId = req.body.badallotid;
-    const findbadallot = await bookingBad.find({
-      _id: bad_allotId,
-    });
-    const badId = req.body.badid;
-    const findbad = await Bad.find({
-      _id: badId,
-    });
-    const findHospital = await Hospital.findById(findbad[0].hospitalId);
-    const hosName = findHospital.name;
-    const hosEmail = findHospital.email;
-    // console.log(hosName);
-    // otp
-    const otpVerify = req.body.otp;
-    const emailpatient = findbadallot[0].email;
-    // console.log(emailpatient);
-    if (otpVerify === findbadallot[0].otp) {
-      if (findbadallot[0].bookingFlag === false) {
-        if (findbadallot[0].type == "General") {
-          const badupdateNum = findbad[0].generalType.availbility - 1;
-          const priceperbad = findbad[0].generalType.pricePerbad;
-          const type = findbad[0].generalType.type;
-          console.log(badupdateNum);
-          const baddata = await Bad.findOneAndUpdate(
-            {
-              _id: badId,
-            },
-            {
-              $set: {
-                generalType: {
-                  type: type,
-                  availbility: badupdateNum,
-                  pricePerbad: priceperbad,
-                },
-              },
-            }
-          );
+    const { badallotId, badId, otpVerify } = req.body;
+    const findbadAllot = await bookingBad.findById(badallotId);
+    const findbad = await Bad.findById(badId);
+    const findHospital = await Hospital.findById(findbad.hospitalId);
+    const hosName = findHospital.name,
+      hosEmail = findHospital.email,
+      emailpatient = findbadAllot.email;
 
-          /// after otp verification
-
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: process.env.AUTHEREMAIL,
-              pass: process.env.AUTHERPASS,
-            },
-          });
-
-          const mailOptions = {
-            from: process.env.AUTHEREMAIL,
-            to: emailpatient,
-            subject: "Booking confirmation",
-            text: `Your bed has been booked via WeCare. \n Booking Details:\n  Bed Type : ${type} \n Bed Price : ${priceperbad}Rs \n Hospital Name : ${hosName} \n Bed Id: ${bad_allotId} \nPlease confirm the booking by reaching hospital within 3 hours. \n For any help, contact the hospital at ..\n ${hosEmail}`,
-          };
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("OTP sent");
-            }
-          });
-        } else if (findbadallot[0].type == "Special") {
-          const badupdateNum = findbad[0].specialType.availbility - 1;
-          const priceperbad = findbad[0].specialType.pricePerbad;
-          const type = findbad[0].specialType.type;
-          console.log(badupdateNum);
-          const baddata = await Bad.findOneAndUpdate(
-            {
-              _id: badId,
-            },
-            {
-              $set: {
-                specialType: {
-                  type: type,
-                  availbility: badupdateNum,
-                  pricePerbad: priceperbad,
-                },
-              },
-            }
-          );
-
-          /// after otp verification
-
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: process.env.AUTHEREMAIL,
-              pass: process.env.AUTHERPASS,
-            },
-          });
-
-          const mailOptions = {
-            from: process.env.AUTHEREMAIL,
-            to: emailpatient,
-            subject: "Booking confirmation",
-            text: `Your bed has been booked via WeCare. \n Booking Details:\n  Bed Type : ${type} \n Bed Price : ${priceperbad}Rs \n Hospital Name : ${hosName} \n Bed Id: ${bad_allotId}\n For any help, contact the hospital at ..\n ${hosEmail}`,
-          };
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("OTP sent");
-            }
-          });
+    let badupdateNum = 0,
+      priceperbad = 0,
+      type = "";
+    if (otpVerify === findbadAllot.otp) {
+      if (findbadAllot.bookingFlag === false) {
+        if (findbadAllot.type == "General") {
+          (badupdateNum = findbad.generalType.availbility - 1),
+            (priceperbad = findbad.generalType.pricePerbad),
+            (type = findbad.generalType.type);
+        } else if (findbadAllot.type == "Special") {
+          (badupdateNum = findbad.specialType.availbility - 1),
+            (priceperbad = findbad.specialType.pricePerbad),
+            (type = findbad.specialType.type);
         }
-        const updateBookinngFlag = await bookingBad.findOneAndUpdate(
+        await Bad.findOneAndUpdate(
           {
-            _id: bad_allotId,
+            _id: badId,
           },
+          {
+            $set: {
+              specialType: {
+                type: type,
+                availbility: badupdateNum,
+                pricePerbad: priceperbad,
+              },
+            },
+          }
+        );
+        await bookingBad.findByIdAndUpdate(
+          badallotId,
           {
             $set: {
               bookingFlag: true,
             },
           }
         );
+        /// after otp verification
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.AUTHEREMAIL,
+            pass: process.env.AUTHERPASS,
+          },
+        });
+
+        const mailOptions = {
+          from: process.env.AUTHEREMAIL,
+          to: emailpatient,
+          subject: "Booking confirmation",
+          text: `Your bed has been booked via WeCare. \n Booking Details:\n  Bed Type : ${type} \n Bed Price : ${priceperbad}Rs \n Hospital Name : ${hosName} \n Bed Id: ${badallotId}\n For any help, contact the hospital at ..\n ${hosEmail}`,
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("OTP sent");
+          }
+        });
+
         res.status(200).send("your bad has been booked");
       } else {
         res.status(400).send("go to booking page and try to book again");
