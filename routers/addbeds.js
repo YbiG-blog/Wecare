@@ -2,6 +2,7 @@ const express = require("express");
 const router = new express.Router();
 const Bed = require("../models/bed");
 const jwtDecode = require("jwt-decode");
+const Hospital = require("../models/hospital");
 const verify = require("../middleware/auth");
 
 router.put("/addbed", verify, async ({ body }, res) => {
@@ -9,12 +10,14 @@ router.put("/addbed", verify, async ({ body }, res) => {
     const token = body.cookie_token;
     const decode = jwtDecode(token);
     const { _id } = decode;
+    const findHos = await Hospital.findById(_id);
     const { generalType, specialType, otherFacilities } = await body;
     let beds_creat = new Bed({
       hospitalId: _id,
       generalType,
       specialType,
       otherFacilities,
+      city: findHos.city
     });
     await beds_creat.save();
     let msg = "bed add successfully";
@@ -36,5 +39,6 @@ router.post("/seebeds", async ({ body }, res) => {
     res.status(400).send(err);
   }
 });
+// "hospitalId":"632e0674d1b20113a204368e"
 
 module.exports = router;

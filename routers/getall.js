@@ -19,7 +19,7 @@ router.get("/hospitals/:city", async ({ params }, res) => {
     const allHospital = await Hospital.find(
       { city: citywise },
       {
-      password: 0,
+        password: 0,
       }
     );
     if (allHospital.length === 0) {
@@ -49,69 +49,45 @@ router.get("/hospitalsbypin/:pincode", async ({ params }, res) => {
     res.status(500).send(`err ${err}`);
   }
 });
-router.get("/datadistrict", async (req, res) => {
+router.get("/data-district", async (req, res) => {
   try {
-  // let bedsj = 0,
-  //   numhj = 0;
-  // const findbedJ = await Hospital.find({ city: "jaipur" }).populate("HospitalId");
-  // for (let i = 0; i < findbedJ.length; i++) {
-  //   let id = findbedJ[i]._id;
-  //   const availableBeds = await Bed.find({ HospitalId: id });
-  //   bedsj +=
-  //     availableBeds[i].generalType.availbility +
-  //     availableBeds[i].specialType.availbility;
-  //   numhj += 1;
-  // }
-  // let bedsk = 0,
-  //   numhk = 0;
-  // const findbedk = await Hospital.find({ city: "kota" }).populate("HospitalId");
-  // for (let i = 0; i < findbedk.length; i++) {
-  //   let id = findbedk[i]._id;
-  //   const availableBeds = await Bed.find({ HospitalId: id });
-  //   bedsk +=
-  //     availableBeds[i].generalType.availbility +
-  //     availableBeds[i].specialType.availbility;
-  //   numhk += 1;
-  // }
-  // let bedsa = 0,
-  //   numha = 0;
-  // const findbeda = await Hospital.find({ city: "ajmer" }).populate("HospitalId");
-  // for (let i = 0; i < findbeda.length; i++) {
-  //   let id = findbeda[i]._id;
-  //   const availableBeds = await Bed.find({ HospitalId: id });
-  //   bedsa +=
-  //     availableBeds[i].generalType.availbility +
-  //     availableBeds[i].specialType.availbility;
-  //   numha += 1;
-  // }
-  // const result = { bedsj, bedsk, bedsa, numhj, numhk, numha };
-  res.status(200).send('jnj');
-} catch (error) {
-  res.status(501).send(`err ${error}`)
-}
+    let bedsj = 0, numhj = 0,
+      bedsa = 0, numha = 0,
+      bedsk = 0, numhk = 0;
+    const findbedJ = await Bed.find(
+      { city: "jaipur" },
+      { _id: 1, generalType: 1, specialType: 1, HospitsalId: 1 }
+    );
+    const findbedk = await Bed.find(
+      { city: "kota" },
+      { _id: 1, generalType: 1, specialType: 1, HospitsalId: 1 }
+    );
+    const findbeda = await Bed.find(
+      { city: "ajmer" },
+      { _id: 1, generalType: 1, specialType: 1, HospitsalId: 1 }
+    );
+findbedJ.forEach(e => {
+        bedsj +=
+          e.generalType.availbility +
+          e.specialType.availbility;
+        numhj += 1;
 });
-router.put("/pichart", verify, async ({ body }, res) => {
-  try {
-    const token = body.cookie_token;
-    const decode = jwtDecode(token);
-    const { _id } = decode;
-
-    let total = 0,
-      general = 0,
-      special = 0;
-
-    const availableBeds = await Bed.findOne({ hospitalId: _id });
-    console.log(availableBeds);
-    total =
-      availableBeds.generalType.availbility +
-      availableBeds.specialType.availbility;
-    general = availableBeds.generalType.availbility;
-    special = availableBeds.specialType.availbility;
-
-    const result = { total, general, special };
-    res.status(200).send(result);
-  } catch (err) {
-    res.status(400).send(`err ${err}`);
+findbeda.forEach(e => {
+  bedsa +=
+    e.generalType.availbility +
+    e.specialType.availbility;
+  numha += 1;
+});
+findbedk.forEach(e => {
+  bedsk +=
+    e.generalType.availbility +
+    e.specialType.availbility;
+  numhk += 1;
+});
+    const result = { bedsj, bedsk, bedsa, numhj, numhk, numha };
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).send(`err ${error}`);
   }
 });
 

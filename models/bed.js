@@ -15,6 +15,7 @@ const bedSchema = new Schema({
   pricePerbad: { type: Number, required: true }
   },
   otherFacilities:{ type: String , required: true},
+  city: {type: String}
 });
 
 const Bed = new mongoose.model("Bed", bedSchema);
