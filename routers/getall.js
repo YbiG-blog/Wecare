@@ -100,7 +100,7 @@ router.put("/pichart", verify, async ({ body }, res) => {
       general = 0,
       special = 0;
 
-    const availableBeds = await Bed.find({ hospitalId: _id });
+    const availableBeds = await Bed.findOne({ hospitalId: _id });
     console.log(availableBeds);
     total =
       availableBeds.generalType.availbility +
