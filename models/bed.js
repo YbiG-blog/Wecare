@@ -2,7 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const badSchema = new Schema({
+const bedSchema = new Schema({
   hospitalId: { type: Schema.Types.ObjectId, ref: "Hospital" },
   generalType : { 
   type: { type: String , default : "General"},
@@ -17,5 +17,5 @@ const badSchema = new Schema({
   otherFacilities:{ type: String , required: true},
 });
 
-const Bad = new mongoose.model("Bad", badSchema);
-module.exports = Bad;
+const Bed = new mongoose.model("Bed", bedSchema);
+module.exports = Bed;

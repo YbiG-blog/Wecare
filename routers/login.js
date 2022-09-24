@@ -1,8 +1,8 @@
 const express = require("express");
-const Hospital = require("../schemas/hospital");
+const Hospital = require("../models/hospital");
 const bcrypt = require("bcrypt");
 const router = new express.Router();
-
+const jwt = require("jsonwebtoken");
 
 // login route for hospital
 router.post("/loginhospital", async ({body}, res) => {
@@ -15,9 +15,9 @@ router.post("/loginhospital", async ({body}, res) => {
         password,
         hospitalCheck.password
       );
-
-      const cookie_token = await hospitalCheck.generateAuthToken();
-      console.log(cookie_token);
+      // token generate
+      const pay_load = { _id: hospitalCheck._id };
+      const cookie_token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
 
       //add cookie
       res.cookie("jwt_shi23", cookie_token, {

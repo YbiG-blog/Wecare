@@ -4,9 +4,9 @@ const cookieParser = require("cookie-parser");
 const registerRouter = require("./routers/register");
 const loginRouter = require("./routers/login");
 const all = require("./routers/getall")
-const addBads = require("./routers/addbads");
-const availableBds = require("./routers/availablebads");
-const bookingBad = require("./routers/bookingbad")
+const addBeds = require("./routers/addbeds");
+const availableBeds = require("./routers/availablebeds");
+const bookingBed = require("./routers/bookingbed")
 const newsLatter = require("./newslatter");
 
 
@@ -44,9 +44,9 @@ app.use(cookieParser());
 app.use("/", registerRouter);
 app.use("/", loginRouter);
 app.use("/all/", all);
-app.use("/",addBads);
-app.use("/",availableBds);
-app.use("/bad",bookingBad);
+app.use("/",addBeds);
+app.use("/",availableBeds);
+app.use("/bed",bookingBed);
 app.use("/",newsLatter);
 
 

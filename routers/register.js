@@ -1,60 +1,58 @@
 const express = require("express");
 const router = new express.Router();
-const Hospital = require("../schemas/hospital");
-const Bads = require("../schemas/bad");
+const Hospital = require("../models/hospital");
+const Beds = require("../models/bed");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
 // get post post req
-router.post("/hospitalbyid", async (req, res) => {
+router.post("/hospitalbyid", async ({ body }, res) => {
   try {
-    const id = req.body.id;
-    const dataHos = await Hospital.findById(id);
-    const badData = await Bads.find();
-
-    for (let i = 0; i < badData.length; i++) {
-      if(badData[i].hospitalId == id)
+    const Id = body.Id;
+    const dataHos = await Hospital.findById(Id);
+    const bedData = await Beds.findOne(
+      { hospitalId: Id },
       {
-       var matchbadData = badData[i];
-        break;
+        // projection
+        _id: 0,
+        generalType: 1,
+        specialType: 1,
       }
-    }  
-
-
-    res.status(200).send({ dataHos, matchbadData });
+    );
+    res.status(200).send({ dataHos, bedData });
   } catch (err) {
     res.status(400).send(err);
   }
 });
-router.get("/hospital/:id", async (req, res) => {
+router.get("/hospital/:id", async ({ params }, res) => {
   try {
-    const id = req.params.id;
-    const dataHos = await Hospital.findById(id);
-    const badData = await Bads.find();
-
-    for (let i = 0; i < badData.length; i++) {
-      if(badData[i].hospitalId == id)
+    const Id = params.id;
+    const dataHos = await Hospital.findById(Id);
+    const bedData = await Beds.findOne(
+      { hospitalId: Id },
       {
-       var matchbadData = badData[i];
-        break;
+        // projection
+        _id: 0,
+        generalType: 1,
+        specialType: 1,
       }
-    }  
-
-
-    res.status(200).send({ dataHos, matchbadData });
+    );
+    res.status(200).send({ dataHos, bedData });
   } catch (err) {
     res.status(400).send(err);
   }
 });
 // update hospital
-router.patch("/hospital/:id", async (req, res) => {
+router.patch("/hospital/:id", async ({ body, params }, res) => {
   try {
-    const id = req.params.id;
-    const data = await Hospital.findOneAndUpdate(
+    const Id = params.id;
+   const t = await Hospital.findOneAndUpdate(
       {
-        _id: id,
+        _id: Id,
       },
       {
-        $set: req.body,
+        $set: body,
       }
     );
     res.status(200).send("Account Updated");
@@ -63,10 +61,10 @@ router.patch("/hospital/:id", async (req, res) => {
   }
 });
 // delete hospital
-router.delete("/hospital/:id", async (req, res) => {
+router.delete("/hospital/:id", async ({ params }, res) => {
   try {
-    const id = req.params.id;
-    const data = await Hospital.findByIdAndDelete(id);
+    const Id = params.id;
+    const data = await Hospital.findByIdAndDelete(Id);
     res.status(200).json("Account deleted");
   } catch (err) {
     console.log(err);
@@ -74,7 +72,6 @@ router.delete("/hospital/:id", async (req, res) => {
   }
 });
 router.post("/registerhospital", async (req, res) => {
-  // const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
   try {
     const {
       name,
@@ -104,17 +101,19 @@ router.post("/registerhospital", async (req, res) => {
       pincode,
       hospitalType,
     });
-
+    // password encryption------------
+    hospital_create.password = await bcrypt.hash(
+      hospital_create.password,
+      saltRounds
+    );
     const save = await hospital_create.save();
     // token
     const pay_load = { _id: hospital_create._id };
-    console.log(hospital_create.Hospitalid);
     const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
     res.status(201).send({ save, token });
   } catch (err) {
     res.status(400).send(`error ${err}`);
   }
 });
-
 
 module.exports = router;

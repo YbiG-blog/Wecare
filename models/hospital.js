@@ -25,23 +25,7 @@ const HospitalSchema = new mongoose.Schema({
   hospitalType: { type: Boolean, default: false }, // private or government ... true for - government and false for - private
 });
 
-// token generate---------
-HospitalSchema.methods.generateAuthToken = async function () {
-  try {
-    const pay_load = { _id: this._id };
-    const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
-    return token;
-  } catch (err) {
-    return err;
-  }
-};
-// password encryption------------
-HospitalSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = bcrypt.hash(this.password, saltRounds);
-  }
-  next();
-});
+
 
 const Hospital = new mongoose.model("Hospital", HospitalSchema);
 module.exports = Hospital;
