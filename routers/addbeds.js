@@ -24,12 +24,12 @@ router.put("/addbed", verify, async ({ body }, res) => {
   }
 });
 
-router.put("/seebeds", async ({ body }, res) => {
+router.post("/seebeds", async ({ body }, res) => {
   try {
     const hospitalId = body.hospitalId;
     const bedData = await Bed.find({ hospitalId: hospitalId }).populate(
       "hospitalId",
-      "name email mobileNum state city pincode hospitalType"
+      "name email"
     );
     res.status(200).send(bedData);
   } catch (err) {

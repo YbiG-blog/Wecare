@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const bookingSchema = new Schema({
-  // _id:{type:String},
   hospitalId: { type: Schema.Types.ObjectId, ref: "Hospital" },
   patientName: { type: String, required: true, minlength: 3 },
   Adhar: { type: Number, required: true, minlength: 12, maxlength: 12,unique: false},

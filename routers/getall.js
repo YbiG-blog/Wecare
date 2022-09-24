@@ -19,7 +19,7 @@ router.get("/hospitals/:city", async ({ params }, res) => {
     const allHospital = await Hospital.find(
       { city: citywise },
       {
-        password: 0,
+      password: 0,
       }
     );
     if (allHospital.length === 0) {
