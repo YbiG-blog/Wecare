@@ -1,8 +1,5 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
-const jwt = require("jsonwebtoken");
 
 const HospitalSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 3 },

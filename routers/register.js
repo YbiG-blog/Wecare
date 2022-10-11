@@ -18,6 +18,7 @@ router.post("/hospitalbyid", async ({ body }, res) => {
         _id: 0,
         generalType: 1,
         specialType: 1,
+        otherFacilities:1
       }
     );
     res.status(200).send({ dataHos, bedData });
