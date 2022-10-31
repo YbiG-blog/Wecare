@@ -18,9 +18,10 @@ router.post("/hospitalbyid", async ({ body }, res) => {
         _id: 0,
         generalType: 1,
         specialType: 1,
-        otherFacilities:1
+        otherFacilities:1,
       }
     );
+    console.log(bedData.generalType.availbility);
     res.status(200).send({ dataHos, bedData });
   } catch (err) {
     res.status(400).send(err);
