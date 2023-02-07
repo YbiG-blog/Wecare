@@ -3,19 +3,18 @@ const express = require("express")
 const cookieParser = require("cookie-parser");
 const registerRouter = require("./routers/register");
 const loginRouter = require("./routers/login");
-const all = require("./routers/getall")
+const getAll = require("./routers/getall")
 const addBeds = require("./routers/addbeds");
 const availableBeds = require("./routers/availablebeds");
 const bookingBed = require("./routers/bookingbed")
 const newsLatter = require("./newslatter");
-
 
 require("./database/database");
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -43,7 +42,7 @@ app.use(cookieParser());
 
 app.use("/", registerRouter);
 app.use("/", loginRouter);
-app.use("/all/", all);
+app.use("/all/", getAll);
 app.use("/",addBeds);
 app.use("/",availableBeds);
 app.use("/bed",bookingBed);

@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
-// get post post req
+// get  post req
 router.post("/hospitalbyid", async ({ body }, res) => {
   try {
     const Id = body.Id;
@@ -27,10 +27,10 @@ router.post("/hospitalbyid", async ({ body }, res) => {
     res.status(400).send(err);
   }
 });
-router.get("/hospital/:id", async ({ params }, res) => {
+router.get("/hospital/:_id", async ({ params }, res) => {
   try {
-    const Id = params.id;
-    const dataHos = await Hospital.findById(Id);
+    const { _id } = params;
+    const dataHos = await Hospital.findById(_id);
     const bedData = await Beds.findOne(
       { hospitalId: Id },
       {
@@ -73,6 +73,7 @@ router.delete("/hospital/:id", async ({ params }, res) => {
     return res.status(400).json(err);
   }
 });
+
 router.post("/registerhospital", async (req, res) => {
   try {
     const {
@@ -112,7 +113,7 @@ router.post("/registerhospital", async (req, res) => {
     // token
     const pay_load = { _id: hospital_create._id };
     const token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
-    res.status(201).send({ save, token });
+    res.status(201).send({ save, token, });
   } catch (err) {
     res.status(400).send(`error ${err}`);
   }
