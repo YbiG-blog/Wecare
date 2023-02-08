@@ -13,7 +13,7 @@ router.post("/login", async ({ body }, res) => {
     if (hospitalCheck) {
       const match_password = bcrypt.compare(password, hospitalCheck.password);
       // token generate
-      const pay_load = { _id: hospitalCheck._id };
+      const pay_load = { _id: hospitalCheck._id, city : hospitalCheck.city };
       const cookie_token = jwt.sign(pay_load, process.env.TOKEN_SECRET_KEY);
       // //add cookie
       // res.cookie("jwt_shi23", cookie_token, { //   secure: true,

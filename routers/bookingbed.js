@@ -4,7 +4,6 @@ const router = new express.Router();
 const bookingBed = require("../models/booking");
 const Bed = require("../models/bed");
 const Hospital = require("../models/hospital");
-const atob = require("atob");
 const jwtDecode = require("jwt-decode");
 const verify = require("../middleware/auth");
 const sendEmail = require("../services/email");
@@ -287,58 +286,28 @@ router.get("/booking/:id", async ({ params }, res) => {
 });
 router.delete("/booking/:id", async ({ params }, res) => {
   try {
-    const findBookingbed = await bookingBed.findById(params.id);
-    if (!findBookingbed)
-      return res.status(404).send("Oops! \nbooking data not found");
-    const findBookingbad2 = await bookingBed.findByIdAndDelete(params.id);
-    const Id = findBookingbed.hospitalId;
-    const findBed = await Bed.find({ hospitalId: Id });
+    const { _id } = params;
+    const findBookingbed = await bookingBed.findById( _id );
+    if (!findBookingbed) return res.status(404).json("Oops! \nbooking data not found");
+    const hospitalId = findBookingbed.hospitalId;
+    const findBed = await Bed.findOne({ hospitalId: hospitalId });
     if (findBookingbed.type == "General") {
-      const badupdateNum = findBed[0].generalType.availbility + 1;
-      const priceperbad = findBed[0].generalType.pricePerbad;
-      const type = findBed[0].generalType.type;
-      await Bed.findOneAndUpdate(
-        {
-          _id: findBed[0]._id,
-        },
-        {
-          $set: {
-            generalType: {
-              type: type,
-              availbility: badupdateNum,
-              pricePerbad: priceperbad,
-            },
-          },
-        }
-      );
+      await Bed.aggreagte([
+        {$match : { _id : findBed._id } },
+        {$inc : { "generalType.$.availbility" : -1 } } ]);
     } else {
-      const badupdateNum = findBed[0].specialType.availbility + 1;
-      const priceperbad = findBed[0].specialType.pricePerbad;
-      const type = findBed[0].specialType.type;
-      await Bed.findOneAndUpdate(
-        {
-          _id: findBed[0]._id,
-        },
-        {
-          $set: {
-            specialType: {
-              type: type,
-              availbility: badupdateNum,
-              pricePerbad: priceperbad,
-            },
-          },
-        }
-      );
+      await Bed.aggreagte([
+        {$match : { _id : findBed._id } },
+        {$inc : { "specialType.$.availbility" : -1 } } ]);
     }
     /// opt for discharged
-    const text = `You have been discharged\n We wish for a healthy life`,
-      subject = "discharged",
+    const text = `You have been discharged\n We wish for a healthy life`, subject = "discharged",
       userEmail = findBookingbed.email;
     /// opt for discharged
     sendEmail(userEmail, subject, text);
-    res.status(200).send("Booking has been deleted.");
+    return res.status(200).json("Booking has been deleted.");
   } catch (err) {
-    res.status(400).send(`err ${err}`);
+   return res.status(400).send(`err ${err}`);
   }
 });
 

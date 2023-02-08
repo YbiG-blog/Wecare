@@ -75,7 +75,7 @@ router.post("/register", async ({ body }, res) => {
     const save = await hospital_create.save();
 
     // token
-    const pay_load = { _id: hospital_create._id };
+    const pay_load = { _id: hospital_create._id , city : hospital_create.city };
     const token = jwt.sign( pay_load, process.env.TOKEN_SECRET_KEY);
 
     return res.status(201).send({ save, token, });

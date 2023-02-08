@@ -5,38 +5,31 @@ const jwtDecode = require("jwt-decode");
 const Hospital = require("../models/hospital");
 const verify = require("../middleware/auth");
 
-router.put("/addbed", verify, async ({ body }, res) => {
+router.patch("/addBed", verify, async ({ body }, res) => {
   try {
-    const token = body.cookie_token;
-    const decode = jwtDecode(token);
-    const { _id } = decode;
-    const findHos = await Hospital.findById(_id);
-    const { generalType, specialType, otherFacilities } = await body;
-    let beds_creat = new Bed({
-      hospitalId: _id,
-      generalType,
-      specialType,
-      otherFacilities,
-      city: findHos.city
-    });
-    await beds_creat.save();
-    let msg = "bed add successfully";
-    await res.status(201).send({ msg });
+    const { cookie_token,  generalType, specialType, otherFacilities } = body;
+    const decode = jwtDecode( cookie_token );
+    const { _id, city } = decode;
+    const findBed = await Bed.findOneAndUpdate( { hospitalId : _id },{
+      $set : { generalType, specialType } });
+
+ if(!findBed){ new Bed({ hospitalId: _id, generalType, specialType, otherFacilities, city : city }).save();}
+    return res.status(201).json({ msg: "Bed added/updated successfully" });
   } catch (err) {
-    res.status(500).send(err);
+    console.log(`err : ${err.message}`);
+   return res.status(500).send(err);
   }
 });
 
-router.post("/seebeds", async ({ body }, res) => {
+router.post("/seeBeds", async ({ body }, res) => {
   try {
-    const hospitalId = body.hospitalId;
-    const bedData = await Bed.find({ hospitalId: hospitalId }).populate(
-      "hospitalId",
-      "name email"
-    );
-    res.status(200).send(bedData);
+    const { hospitalId } = body;
+    const bedData = await Bed.findOne({ hospitalId: hospitalId }).populate(
+      { path : "hospitalId" } );
+       if(!bedData)  return res.status(401).send("No Beds");
+        return res.status(200).send(bedData);
   } catch (err) {
-    res.status(400).send(err);
+   return res.status(400).send(err);
   }
 });
 // "hospitalId":"632e0674d1b20113a204368e"
