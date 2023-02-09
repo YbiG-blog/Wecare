@@ -9,8 +9,8 @@ const bookingSchema = new Schema({
   email: { type: String, required: true, unique: false },
   age: { type: Number, required: true },
   type: { type: String, required: true },
-  otp: {  type: Number, required: true,
-  },
+  price: { type: Number, required: true },
+  otp: {  type: Number, required: true },
   bookingFlag: { type: Boolean, default: false },
   hospitalFlag: { type: Boolean, default: false },
 },{ timestamps: true });
