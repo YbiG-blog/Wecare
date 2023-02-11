@@ -8,13 +8,15 @@ const addBeds = require("./routers/addbeds");
 const availableBeds = require("./routers/availablebeds");
 const bookingBed = require("./routers/bookingbed")
 const newsLatter = require("./newslatter");
+const cors  = require('cors');
 
 require("./database/database");
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(cors());
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -33,10 +35,6 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.send("Hi,the API is working.");
 });
-
-//Middlewares
-app.use(express.json());
-app.use(cookieParser());
 
 // routers -------------------
 
