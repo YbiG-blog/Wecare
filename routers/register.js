@@ -69,7 +69,7 @@ router.post("/register", async ({ body }, res) => {
     // const cookie_token = await  Hospital.generateAuthToken();
      city = city.toLowerCase();
     const hospital_create = new Hospital({
-    name, email, mobileNum, password, address, state, city, pincode, hospitalType  });
+    name, email, mobileNum, password, address, state, city, pincode, hospitalType });
     // password encryption------------
     hospital_create.password = await bcrypt.hash( hospital_create.password,  saltRounds  );
     const save = await hospital_create.save();

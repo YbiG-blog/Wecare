@@ -15,7 +15,8 @@ router.get("/hospitals", async (req, res) => {
 router.get("/hospitals/:city", async ({ params }, res) => {
   try {
     const { city } = params;
-    const allHospital = await Hospital.find({ city: city }, { password: 0 });
+    const allHospital = await Hospital.find({ city: city.toLowerCase() }, { password: 0, __v : 0 });
+
     if (allHospital.length === 0) {
       return res.status(404).send("No bed available in this area");
     }
