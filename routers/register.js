@@ -11,7 +11,7 @@ router.post("/hospitalbyId", async ({ body }, res) => {
   try {
     const { _id } = body;
     const dataArray = await Beds.findOne({ hospitalId: _id }).populate({ path:"hospitalId" });
-    if(!dataArray) return res.status(401).json( "This id does not have any account" );
+    if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
    return res.status(200).send( dataArray );
   } catch (err) {
     console.log(`err : ${ err.message }`);    
@@ -23,7 +23,7 @@ router.get("/hospital/:_id", async ({ params }, res) => {
   try {
     const { _id } = params;
     const dataArray = await Beds.findOne({ hospitalId: _id }).populate({ path:"hospitalId" });
-    if(!dataArray) return res.status(401).json( "This id does not have any account" );
+    if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
    return res.status(200).send( dataArray );
   } catch (err) {
     console.log(`err : ${ err.message }`);    
