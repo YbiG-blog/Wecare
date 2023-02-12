@@ -18,7 +18,7 @@ router.post("/hospitalbyId", async ({ body }, res) => {
         from : "hospitals",
         localField : "hospitalId",
         foreignField : "_id",
-        as : "hospitals"   }} ]);
+        as : "hospitalId"   }} ]);
     if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
    return res.status(200).json( dataArray );
   } catch (err) {
@@ -36,7 +36,8 @@ router.get("/hospital/:_id", async ({ params }, res) => {
       from : "hospitals",
       localField : "hospitalId",
       foreignField : "_id",
-      as : "hospitals"   }} ]);
+      as : "hospitalId"   }},
+    {$project : { _id : 0, city : 0 }} ]);
     if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
    return res.status(200).json( dataArray );
   } catch (err) {
