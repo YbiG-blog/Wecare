@@ -1,18 +1,26 @@
 const express = require("express");
 const router = new express.Router();
 const Hospital = require("../models/hospital");
-const Beds = require("../models/bed");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
+const Bed = require("../models/bed");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 // get  post req
 router.post("/hospitalbyId", async ({ body }, res) => {
   try {
     const { _id } = body;
-    const dataArray = await Beds.findOne({ hospitalId: _id }).populate({ path:"hospitalId" });
+    const dataArray = await Bed.aggregate([
+      {$match : { hospitalId: ObjectId(_id) }},
+        {$lookup :{
+        from : "hospitals",
+        localField : "hospitalId",
+        foreignField : "_id",
+        as : "hospitals"   }} ]);
     if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
-   return res.status(200).send( dataArray );
+   return res.status(200).json( dataArray );
   } catch (err) {
     console.log(`err : ${ err.message }`);    
     return res.status(500).json(err);
@@ -22,9 +30,15 @@ router.post("/hospitalbyId", async ({ body }, res) => {
 router.get("/hospital/:_id", async ({ params }, res) => {
   try {
     const { _id } = params;
-    const dataArray = await Beds.findOne({ hospitalId: _id }).populate({ path:"hospitalId" });
+    const dataArray = await Bed.aggregate([
+    {$match : { hospitalId: ObjectId(_id) }},
+      {$lookup :{
+      from : "hospitals",
+      localField : "hospitalId",
+      foreignField : "_id",
+      as : "hospitals"   }} ]);
     if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
-   return res.status(200).send( dataArray );
+   return res.status(200).json( dataArray );
   } catch (err) {
     console.log(`err : ${ err.message }`);    
     return res.status(500).json(err);
