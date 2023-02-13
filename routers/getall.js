@@ -45,9 +45,8 @@ router.get("/data-district", async (req, res) => {
         $group: {
           _id: "$city",
           bedCount: { $sum: { $add: ["$generalType.availbility", "$specialType.availbility"] } },
-          hospitalsCount: { $sum: 1 }
-        }
-      }]);
+          hospitalsCount: { $sum: 1 }  } },
+          {$sort : { _id : 1 }} ]);
     return res.status(200).json(dataArray);
   } catch (e) {
     console.log(`error : ${e.message}`);

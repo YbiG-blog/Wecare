@@ -21,7 +21,7 @@ router.post("/hospitalbyId", async ({ body }, res) => {
         as : "hospitalId"   }},
      {$project : { _id : 0, city : 0 }} ]);
     if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
-   return res.status(200).json( dataArray );
+   return res.status(200).json({"result" : dataArray } );
   } catch (err) {
     console.log(`err : ${ err.message }`);    
     return res.status(500).json(err);
@@ -40,7 +40,7 @@ router.get("/hospital/:_id", async ({ params }, res) => {
       as : "hospitalId"   }},
     {$project : { _id : 0, city : 0 }} ]);
     if(!dataArray) return res.status(401).json( "This id does not have any account / please add beds details." );
-   return res.status(200).json( dataArray );
+   return res.status(200).json({"result" : dataArray });
   } catch (err) {
     console.log(`err : ${ err.message }`);    
     return res.status(500).json(err);
