@@ -100,7 +100,8 @@ router.get("/booking/:_id", async ({ params }, res) => {
 router.delete("/booking/:_id", async ({ params }, res) => {
   try {
     const { _id } = params;
-    const findBookingbed = await BookingBed.findById( _id );
+    const findBookingbed = await BookingBed.findByIdAndDelete( _id );
+    console.log(findBookingbed);
     if (!findBookingbed) return res.status(404).json("Oops! \nbooking data not found");
     const { hospitalId }= findBookingbed;
     const findBed = await Bed.findOne({ hospitalId: hospitalId });
