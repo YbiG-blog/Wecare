@@ -42,8 +42,9 @@ router.put("/bookingbed/verify", async ({ body }, res) => {
           {$set : { generalType: { availbility : generalType.availbility -1, pricePerbad : generalType.pricePerbad, type :"General"  } }});  } 
         else if (findbooking.type == "Special") {
           await Bed.findByIdAndUpdate({ _id : bedId },
-            {$set : { specialType: { availbility : specialType.availbility -1, pricePerbad : specialType.pricePerbad, type :"Special"} }});  } 
-
+            {$set : { specialType: { availbility : specialType.availbility -1, pricePerbad : specialType.pricePerbad, type :"Special"} }});  }
+            // update booking
+            await BookingBed.findByIdAndUpdate({ _id : bookingId }, {  $set: { bookingFlag: true} });   
         const text = `Your bed has been booked via WeCare. \n Booking Details:\n  Bed Type : ${findbooking.type} \n Bed Price : ${findbooking.price}Rs \n Hospital Name : ${hosName} \n Bed Id: ${findbooking._id}\n For any help, contact the hospital at ..\n ${hosEmail}`,
         subject = "booking confirmation";
         /// confirmationn email sent
@@ -96,7 +97,7 @@ router.get("/booking/:_id", async ({ params }, res) => {
   }
 });
 // delete bed
-router.delete("/booking/:id", async ({ params }, res) => {
+router.delete("/booking/:_id", async ({ params }, res) => {
   try {
     const { _id } = params;
     const findBookingbed = await BookingBed.findById( _id );
@@ -104,11 +105,11 @@ router.delete("/booking/:id", async ({ params }, res) => {
     const { hospitalId }= findBookingbed;
     const findBed = await Bed.findOne({ hospitalId: hospitalId });
     if (findBookingbed.type == "General") {
-      await Bed.aggreagte([ {$match : { _id : findBed._id } },
-        {$inc : { "generalType.$.availbility" : 1 } } ]);  }
+      await Bed.findByIdAndUpdate({ _id : findBed._id },
+        {$set : { generalType: { availbility : findBed.generalType.availbility +1, pricePerbad : findBed.generalType.pricePerbad, type :"General"  } }});  } 
     else {
-      await Bed.aggreagte([ {$match : { _id : findBed._id } },
-        {$inc : { "specialType.$.availbility" : -1 } } ]);  }
+      await Bed.findByIdAndUpdate({ _id : findBed._id },
+        {$set : { specialType: { availbility : findBed.specialType.availbility +1, pricePerbad : findBed.specialType.pricePerbad, type :"Special"} }});  }
     /// opt for discharged
     const text = `You have been discharged\n We wish for a healthy life`, subject = "discharged",
       userEmail = findBookingbed.email;
