@@ -15,5 +15,5 @@ const bookingSchema = new Schema({
   bookingFlag: { type: Boolean, default: false },
 });
 
-const Bookingbad = new mongoose.model("Bookingbad", bookingSchema);
-module.exports = Bookingbad;
+const Bookingbed = new mongoose.model("Bookingbed", bookingSchema);
+module.exports = Bookingbed;

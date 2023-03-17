@@ -1,7 +1,6 @@
 const express = require("express");
 const Hospital = require("../models/hospital");
 const Bed = require("../models/bed");
-const { result } = require("lodash");
 const router = new express.Router();
 
 router.get("/hospitals", async (req, res) => {

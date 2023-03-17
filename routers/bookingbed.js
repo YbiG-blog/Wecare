@@ -5,12 +5,14 @@ const BookingBed = require("../models/booking");
 const Bed = require("../models/bed");
 const verify = require("../middleware/auth");
 const sendEmail = require("../services/email");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 router.put("/booking/:_id", async ({ body, params }, res) => {
   try {
     const { _id } = params;
     const { patientName, Adhar, email, age, type, price } = body;
-    if( await BookingBed.findOne( Adhar )) return res.status(401).json("This Adhar already used by others.");
+    if( await BookingBed.findOne( { Adhar} )) return res.status(401).json("This Adhar already used by others.");
 
     const findBed = await Bed.findOne({ hospitalId: _id }).populate("hospitalId", "name email");
     const OTP = Math.floor(100000 + Math.random() * 900000);
@@ -19,11 +21,11 @@ router.put("/booking/:_id", async ({ body, params }, res) => {
       AllotBed.save();
     const text = `Please verify with below otp \n ${OTP}`,
       subject = "otp vefication",
-      userEmail = bed_allot.email;
+      userEmail = AllotBed.email;
     /// otp sent
     sendEmail(userEmail, subject, text);
-    const msg = "Otp has been sent", bed = findBed;
-    return res.status(201).json({ msg, AllotBed, bed, OTP, userEmail });
+    const msg = "Otp has been sent", bedId = findBed._id, hosName = findBed.hospitalId.name, hosEmail = findBed.hospitalId.email, bookingId = AllotBed._id ;
+    return res.status(201).json({ msg, bookingId, bedId, hosEmail, hosName, OTP, userEmail });
   } catch (err) {
    return res.status(500).send(`err ${err}`);
   }
@@ -31,27 +33,21 @@ router.put("/booking/:_id", async ({ body, params }, res) => {
 
 router.put("/bookingbed/verify", async ({ body }, res) => {
   try {
-    const { AllotBed, bed, OTP, userEmail } = body;
-    const { _id, otp, type, price, bookingFlag} = AllotBed ;
-    const { name, email } = bed;
+    const { bookingId, bedId, hosEmail, hosName, OTP } = body;
+   const findbooking = await BookingBed.findById( { _id : bookingId} );
+   const { generalType, specialType  } = await Bed.findById({ _id : bedId})
+    if (OTP === findbooking.otp) { if (findbooking.bookingFlag === false) {
+        if (findbooking.type == "General") {  
+          await Bed.findByIdAndUpdate({ _id : bedId },
+          {$set : { generalType: { availbility : generalType.availbility -1, pricePerbad : generalType.pricePerbad, type :"General"  } }});  } 
+        else if (findbooking.type == "Special") {
+          await Bed.findByIdAndUpdate({ _id : bedId },
+            {$set : { specialType: { availbility : specialType.availbility -1, pricePerbad : specialType.pricePerbad, type :"Special"} }});  } 
 
-    if (OTP === otp) { if (bookingFlag === false) {
-        if (findbedAllot.type == "General") {  
-          await Bed.aggreagte([
-            {$match : { _id : bed._id}},
-            {$inc : { "generalType.$.availbility" : -1 }}
-          ]) } 
-        else if (findbedAllot.type == "Special") {
-          await Bed.aggreagte([
-            {$match : { _id : bed._id}},
-            {$inc : { "specialType.$.availbility" : -1 }}
-          ]) }
-        await BookingBed.findByIdAndUpdate(_id, {
-          $set: { bookingFlag: true} });
-        const text = `Your bed has been booked via WeCare. \n Booking Details:\n  Bed Type : ${type} \n Bed Price : ${price}Rs \n Hospital Name : ${name} \n Bed Id: ${_id}\n For any help, contact the hospital at ..\n ${email}`,
+        const text = `Your bed has been booked via WeCare. \n Booking Details:\n  Bed Type : ${findbooking.type} \n Bed Price : ${findbooking.price}Rs \n Hospital Name : ${hosName} \n Bed Id: ${findbooking._id}\n For any help, contact the hospital at ..\n ${hosEmail}`,
         subject = "booking confirmation";
         /// confirmationn email sent
-        sendEmail(userEmail, subject, text);
+        sendEmail(findbooking.email, subject, text);
         res.status(200).send("your bed has been booked");
       }
       else { return res.status(401).send("go to booking page and try to book again");  }
@@ -79,10 +75,10 @@ router.put("/hospital/bookingbeds/:type", verify, async ( req , res) => {
 router.post("/patient/bookingbeds", async ({ body }, res) => {
   try {
     const { email } = body;
-    const findBookingbad = await BookingBed.findOne(
+    const findBookingbed = await BookingBed.findOne(
         { email: email },{ Adhar: 1, email: 1,hospitalId: 1}
       ).populate("hospitalId", "name email address");
-    return res.status(200).json(findBookingbad);
+    return res.status(200).json(findBookingbed);
   } catch (err) {
     return res.status(500).send(`err ${err}`);
   }
