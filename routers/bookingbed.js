@@ -61,9 +61,10 @@ router.put("/bookingbed/verify", async ({ body }, res) => {
 router.put("/hospital/bookingbeds/:type", verify, async ( req , res) => {
     try {
       const { type } = req.params;
-      const dataArray = await BookingBed.aggreagte([
+      const dataArray = await BookingBed.aggregate([
         {$match : { type : type}}
-      ])
+      ]);
+      if(dataArray.length==0) return res.status(404).json("data not found");
      return res.status(200).json(dataArray);
     } catch (err) {
      return res.status(500).send(`err ${err}`);
