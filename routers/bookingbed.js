@@ -98,7 +98,7 @@ router.get("/booking/:_id", async ({ params }, res) => {
   }
 });
 // delete bed
-router.delete("/booking/:_id", async ({ params }, res) => {
+router.delete("/booking/:_id",verify, async ({ params }, res) => {
   try {
     const { _id } = params;
     const findBookingbed = await BookingBed.findByIdAndDelete( _id );
