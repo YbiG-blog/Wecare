@@ -15,7 +15,7 @@ require("./database/database");
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(cors());
 
 app.use((req, res, next) => {
@@ -33,9 +33,15 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
+  const cookie_token={ name:"yash" }
+   res.cookie("jwt_yash31", cookie_token, { 
+        expires: new Date(Date.now() + 864000000)});
+        console.log(req.cookies)
   res.send("Hi,the API is working.");
 });
-
+app.get("/getcookie",(req,res)=>{
+  res.send(req.cookies)
+})
 // routers -------------------
 
 app.use("/", registerRouter);
